@@ -41,3 +41,12 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+**/target/
+.project
+.classpath
+.settings/
+**/.project
+**/.classpath
+**/.settings/
+
+main/show/*.xml
