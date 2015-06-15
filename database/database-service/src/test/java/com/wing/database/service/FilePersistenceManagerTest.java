@@ -28,9 +28,9 @@ public class FilePersistenceManagerTest {
 		testing.field = "testing";
 		cut.save("test", testing);
 	}
-	
+
 	@Test
-	public void getObject() throws Exception{
+	public void getObject() throws Exception {
 		TestObject object = (TestObject) cut.retrieve("test");
 	}
 }

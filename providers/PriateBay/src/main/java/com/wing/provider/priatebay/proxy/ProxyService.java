@@ -33,7 +33,7 @@ public class ProxyService {
 
 	@SuppressWarnings("unchecked")
 	private List<String> parseXML(final Document document) {
-		//		System.out.println(document.asXML());
+		// System.out.println(document.asXML());
 		final List<Element> linkNodes = document
 				.selectNodes("//html:a[@shape='rect' and @class='t1' and @rel='nofollow']");
 		final List<String> links = new ArrayList<>();

@@ -22,8 +22,7 @@ public class TvRageShowSearchService extends HttpShowSearchService {
 	private static final String searchURL = "http://services.tvrage.com/feeds/search.php?show={0}";
 	private static final String episodeURL = "http://services.tvrage.com/feeds/episode_list.php?sid={0}";
 	private final SAXReader xmlReader = new SAXReader();
-	private final SimpleDateFormat episodeFormat = new SimpleDateFormat(
-			"yyyy-M-d");
+	private final SimpleDateFormat episodeFormat = new SimpleDateFormat("yyyy-M-d");
 
 	public List<Show> searchShow(final String show) throws Exception {
 		final String url = format(searchURL, URLEncoder.encode(show, "UTF-8"));
@@ -40,32 +39,24 @@ public class TvRageShowSearchService extends HttpShowSearchService {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Episode> processEpisodeXML(final Document document)
-			throws Exception {
+	private List<Episode> processEpisodeXML(final Document document) throws Exception {
 		final List<Element> seasonNodes = document.selectNodes("//Season");
 		if (seasonNodes == null || seasonNodes.isEmpty()) {
 			return null;
 		}
 		final List<Episode> episodes = new ArrayList<>();
 		for (final Element seasonNode : seasonNodes) {
-			final int season = Integer
-					.parseInt(seasonNode.attributeValue("no"));
-			final List<Element> episodeNodes = seasonNode
-					.selectNodes("episode");
+			final int season = Integer.parseInt(seasonNode.attributeValue("no"));
+			final List<Element> episodeNodes = seasonNode.selectNodes("episode");
 			for (final Element episodeNode : episodeNodes) {
 				final Episode episode = new Episode();
-				final Element numberNode = (Element) episodeNode
-						.selectSingleNode("epnum");
-				final Element seasonNumNode = (Element) episodeNode
-						.selectSingleNode("seasonnum");
-				final Element airdateNode = (Element) episodeNode
-						.selectSingleNode("airdate");
-				final Element titleNode = (Element) episodeNode
-						.selectSingleNode("title");
+				final Element numberNode = (Element) episodeNode.selectSingleNode("epnum");
+				final Element seasonNumNode = (Element) episodeNode.selectSingleNode("seasonnum");
+				final Element airdateNode = (Element) episodeNode.selectSingleNode("airdate");
+				final Element titleNode = (Element) episodeNode.selectSingleNode("title");
 
 				final int number = Integer.parseInt(numberNode.getTextTrim());
-				final int seasonNum = Integer.parseInt(seasonNumNode
-						.getTextTrim());
+				final int seasonNum = Integer.parseInt(seasonNumNode.getTextTrim());
 				final String title = titleNode.getTextTrim();
 				String textTrim = airdateNode.getTextTrim();
 				final Date airdate = episodeFormat.parse(textTrim);
@@ -91,12 +82,9 @@ public class TvRageShowSearchService extends HttpShowSearchService {
 		final List<Show> shows = new ArrayList<>();
 		for (final Element showNode : showNodes) {
 			final Show show = new Show();
-			final Element idNode = (Element) showNode
-					.selectSingleNode("showid");
-			final Element nameNode = (Element) showNode
-					.selectSingleNode("name");
-			final Element statusNode = (Element) showNode
-					.selectSingleNode("status");
+			final Element idNode = (Element) showNode.selectSingleNode("showid");
+			final Element nameNode = (Element) showNode.selectSingleNode("name");
+			final Element statusNode = (Element) showNode.selectSingleNode("status");
 
 			final int showId = Integer.parseInt(idNode.getTextTrim());
 			final String name = nameNode.getTextTrim();

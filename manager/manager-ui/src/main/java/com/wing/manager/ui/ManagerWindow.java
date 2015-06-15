@@ -20,6 +20,7 @@ import javax.swing.event.ListSelectionListener;
 import com.wing.database.model.Episode;
 import com.wing.database.model.EpisodeState;
 import com.wing.database.model.Show;
+import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
 import com.wing.manager.ui.components.EpisodeTableModel;
 import com.wing.manager.ui.components.ShowListCellRenderer;
@@ -51,6 +52,7 @@ public class ManagerWindow extends JFrame {
 	private final JButton copyButton;
 
 	private final JButton watchButton;
+	private final JButton searchButton;
 
 	private class ButtonActions implements ActionListener {
 		@Override
@@ -59,8 +61,7 @@ public class ManagerWindow extends JFrame {
 			if ("addShow".equals(command)) {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
-						final SearchDialog dialog = new SearchDialog(
-								searchService);
+						final SearchDialog dialog = new SearchDialog(searchService);
 						dialog.setVisible(true);
 						final Show show = dialog.getSelectedShow();
 						if (show != null) {
@@ -97,6 +98,24 @@ public class ManagerWindow extends JFrame {
 						}
 					}
 				});
+			} else if ("searchEpisode".equals(command)) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						final com.wing.torrent.searcher.SearchDialog dialog = new com.wing.torrent.searcher.SearchDialog(
+								managerService);
+						final Show show = showList.getSelectedValue();
+						final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
+						try {
+							dialog.searchFor(show.getName(), episode.getSeason(), episode.getNumber());
+							final Torrent torrent = dialog.getSelectedTorrent();
+							if (torrent != null) {
+								managerService.saveTorrent(torrent);
+							}
+						} catch (final Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 			}
 		}
 	}
@@ -104,8 +123,7 @@ public class ManagerWindow extends JFrame {
 	private class ShowSelectionListener implements ListSelectionListener {
 		@Override
 		public void valueChanged(final ListSelectionEvent e) {
-			final Show show = listModel.getElementAt(showList
-					.getSelectedIndex());
+			final Show show = listModel.getElementAt(showList.getSelectedIndex());
 			final boolean b = show != null;
 			if (b) {
 				tableModel.setEpisodes(show.getEpisodeList());
@@ -116,26 +134,19 @@ public class ManagerWindow extends JFrame {
 	}
 
 	private class EpisodeSelectionListener implements ListSelectionListener {
-
 		@Override
 		public void valueChanged(final ListSelectionEvent e) {
 			if (!e.getValueIsAdjusting()) {
-				final Show show = listModel.getElementAt(showList
-						.getSelectedIndex());
-				final Episode episode = show.getEpisodeList().get(
-						episodeTable.getSelectedRow());
-				watchButton
-						.setEnabled(episode.getState() == null
-								|| EpisodeState.WATCHED.compareTo(episode
-										.getState()) < 0);
-				copyButton
-						.setEnabled(episode.getState() == null
-								|| EpisodeState.DOWNLOADED.compareTo(episode
-										.getState()) < 0);
-				downloadButton
-						.setEnabled(episode.getState() == null
-								|| EpisodeState.QUEUED.compareTo(episode
-										.getState()) > 0);
+				final Show show = listModel.getElementAt(showList.getSelectedIndex());
+				final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
+				watchButton.setEnabled(episode.getState() == null
+						|| EpisodeState.WATCHED.compareTo(episode.getState()) < 0);
+				copyButton.setEnabled(episode.getState() == null
+						|| EpisodeState.DOWNLOADED.compareTo(episode.getState()) < 0);
+				downloadButton.setEnabled(episode.getState() == null
+						|| EpisodeState.QUEUED.compareTo(episode.getState()) > 0);
+				searchButton.setEnabled(episode.getState() == null
+						|| EpisodeState.QUEUED.compareTo(episode.getState()) > 0);
 			}
 		}
 	}
@@ -161,13 +172,12 @@ public class ManagerWindow extends JFrame {
 	 * 
 	 * @throws Exception
 	 */
-	public ManagerWindow(final ManagerService managerService,
-			final ShowSearchService searchService) throws Exception {
+	public ManagerWindow(final ManagerService managerService, final ShowSearchService searchService) throws Exception {
 		setTitle("TV Show Manager");
 		this.managerService = managerService;
 		this.searchService = searchService;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(50, 50, 1024, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(null);
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -177,10 +187,8 @@ public class ManagerWindow extends JFrame {
 		tableModel = new EpisodeTableModel();
 		episodeTable = new JTable(tableModel);
 		episodeTable.setFillsViewportHeight(true);
-		episodeTable
-				.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		episodeTable.getSelectionModel().addListSelectionListener(
-				new EpisodeSelectionListener());
+		episodeTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		episodeTable.getSelectionModel().addListSelectionListener(new EpisodeSelectionListener());
 
 		final JScrollPane tableScrollPane = new JScrollPane(episodeTable);
 
@@ -218,8 +226,7 @@ public class ManagerWindow extends JFrame {
 		toolBar.addSeparator();
 
 		updateButton = new JButton("Update");
-		updateButton
-				.setToolTipText("Update the Episode List for the current show");
+		updateButton.setToolTipText("Update the Episode List for the current show");
 		updateButton.setActionCommand("update");
 		updateButton.addActionListener(buttonActions);
 		updateButton.setEnabled(false);
@@ -230,17 +237,29 @@ public class ManagerWindow extends JFrame {
 		watchButton = new JButton("Watched");
 		watchButton.setToolTipText("Mark the Current Episode as being watched");
 		watchButton.setEnabled(false);
+		watchButton.setActionCommand("watchEpisode");
+		watchButton.addActionListener(buttonActions);
 		toolBar.add(watchButton);
 
 		copyButton = new JButton("Copy");
 		copyButton.setToolTipText("Copy the current to target");
 		copyButton.setEnabled(false);
+		copyButton.setActionCommand("copyEpisode");
+		copyButton.addActionListener(buttonActions);
 		toolBar.add(copyButton);
 
 		downloadButton = new JButton("Download");
-		downloadButton
-				.setToolTipText("Find and Queue the current Episode for download");
+		downloadButton.setToolTipText("Find and Queue the current Episode for download");
 		downloadButton.setEnabled(false);
+		downloadButton.setActionCommand("downloadEpisode");
+		downloadButton.addActionListener(buttonActions);
 		toolBar.add(downloadButton);
+
+		searchButton = new JButton("Search");
+		searchButton.setToolTipText("Find and Queue the current Episode for download");
+		searchButton.setEnabled(false);
+		searchButton.setActionCommand("searchEpisode");
+		searchButton.addActionListener(buttonActions);
+		toolBar.add(searchButton);
 	}
 }

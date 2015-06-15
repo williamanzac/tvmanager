@@ -29,15 +29,13 @@ public class EpisodeTableModel extends AbstractTableModel {
 		if (episode != null) {
 			switch (col) {
 			case 0:
-				return String.format("s%1$02de%2$02d", episode.getSeason(),
-						episode.getNumber());
+				return String.format("s%1$02de%2$02d", episode.getSeason(), episode.getNumber());
 			case 1:
 				return episode.getTitle();
 			case 2:
 				return episode.getAirdate();
 			case 3:
-				return episode.getState() == null ? null : episode.getState()
-						.name();
+				return episode.getState() == null ? null : episode.getState().name();
 			}
 		}
 		return null;

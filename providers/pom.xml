@@ -11,5 +11,6 @@
   <modules>
     <module>TvRage</module>
     <module>PriateBay</module>
+    <module>TorrentProject</module>
   </modules>
 </project>

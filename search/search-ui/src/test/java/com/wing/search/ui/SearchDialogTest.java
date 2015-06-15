@@ -26,8 +26,7 @@ public class SearchDialogTest {
 
 	@Test
 	public void testSearch() throws Exception {
-		when(searchService.searchShow(anyString())).thenReturn(
-				new ArrayList<Show>());
+		when(searchService.searchShow(anyString())).thenReturn(new ArrayList<Show>());
 
 		cut.textField.setText("buffy");
 		cut.btnNewButton.doClick();

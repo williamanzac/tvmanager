@@ -37,16 +37,14 @@ public class SearchDialog extends JDialog {
 		public void actionPerformed(final ActionEvent event) {
 			final String command = event.getActionCommand();
 			if ("OK".equals(command)) {
-				selectedShow = tableModel.getShows()
-						.get(table.getSelectedRow());
+				selectedShow = tableModel.getShows().get(table.getSelectedRow());
 				SearchDialog.this.setVisible(false);
 			} else if ("Cancel".equals(command)) {
 				selectedShow = null;
 				SearchDialog.this.setVisible(false);
 			} else if ("Search".equals(command)) {
 				try {
-					tableModel.setShows(searchService.searchShow(textField
-							.getText()));
+					tableModel.setShows(searchService.searchShow(textField.getText()));
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}

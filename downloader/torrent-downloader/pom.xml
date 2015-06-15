@@ -13,5 +13,25 @@
 			<artifactId>ttorrent</artifactId>
 			<version>1.4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.wing</groupId>
+			<artifactId>database-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wing</groupId>
+			<artifactId>database-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wing</groupId>
+			<artifactId>manager-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
 	</dependencies>
 </project>

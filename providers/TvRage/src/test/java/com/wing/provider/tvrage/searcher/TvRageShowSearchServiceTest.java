@@ -32,8 +32,7 @@ public class TvRageShowSearchServiceTest {
 	@Test
 	public void parseXML() throws Exception {
 		final SAXReader reader = new SAXReader();
-		final Document document = reader.read(getClass().getResourceAsStream(
-				"/search.xml"));
+		final Document document = reader.read(getClass().getResourceAsStream("/search.xml"));
 		List<Show> list = cut.processShowXML(document);
 		Assert.assertNotNull(list);
 	}

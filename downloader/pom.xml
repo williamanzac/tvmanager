@@ -10,5 +10,6 @@
   <modules>
   	<module>torrent-downloader</module>
   	<module>torrent-searcher</module>
+  	<module>torrent-searcher-ui</module>
   </modules>
 </project>
