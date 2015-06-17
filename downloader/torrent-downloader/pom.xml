@@ -33,5 +33,10 @@
 			<artifactId>commons-codec</artifactId>
 			<version>1.10</version>
 		</dependency>
+		<dependency>
+			<groupId>com.wing</groupId>
+			<artifactId>configuration-service</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

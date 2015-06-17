@@ -15,6 +15,7 @@
 		<module>manager</module>
 		<module>main</module>
 		<module>downloader</module>
+		<module>configuration</module>
 	</modules>
 	<build>
 		<pluginManagement>

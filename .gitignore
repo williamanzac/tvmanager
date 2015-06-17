@@ -51,3 +51,4 @@ Temporary Items
 
 main/show/*.xml
 main/torrent/*.xml
+*.gitignore
