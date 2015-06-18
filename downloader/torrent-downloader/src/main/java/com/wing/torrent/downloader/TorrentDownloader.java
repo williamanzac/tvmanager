@@ -1,6 +1,7 @@
 package com.wing.torrent.downloader;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +10,12 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.PatternLayout;
 
 import com.turn.ttorrent.client.Client;
 import com.turn.ttorrent.client.Client.ClientState;
@@ -74,6 +80,7 @@ public class TorrentDownloader {
 
 	public TorrentDownloader(final ManagerService managerService) {
 		super();
+		BasicConfigurator.configure(new ConsoleAppender(new PatternLayout("%d [%-25t] %-5p: %m%n")));
 		final DownloadObserver observer = new DownloadObserver();
 		this.managerService = managerService;
 		monitorThread = new Thread(() -> {
@@ -93,7 +100,9 @@ public class TorrentDownloader {
 					// get the next torrent in the queue and start downloading.
 				if (downloadQueue.isEmpty() && !queue.isEmpty()) {
 					final Torrent torrent2 = queue.get(0);
-					final byte[] byteArray = IOUtils.toByteArray(torrent2.getUrl().openStream());
+					final InputStream response = getResponse(torrent2.getUrl().toString());
+					final byte[] byteArray = IOUtils.toByteArray(response);
+					// System.out.println(new String(byteArray));
 					final Configuration loadConfiguration = managerService.loadConfiguration();
 					final File torrentDestination = loadConfiguration.torrentDestination;
 					final SharedTorrent torrent = new SharedTorrent(byteArray, torrentDestination);
@@ -110,12 +119,24 @@ public class TorrentDownloader {
 
 					client.waitForCompletion();
 				}
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
+			try {
 				Thread.sleep(1000);
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
-	});
+	}	);
+	}
+
+	protected InputStream getResponse(final String url) throws Exception {
+		final HttpClient client = new HttpClient();
+		final GetMethod method = new GetMethod(url);
+		// method.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
+		client.executeMethod(method);
+		return method.getResponseBodyAsStream();
 	}
 
 	public void start() {

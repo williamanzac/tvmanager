@@ -17,6 +17,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.wing.configuration.ui.ConfigurationDialog;
 import com.wing.database.model.Episode;
 import com.wing.database.model.EpisodeState;
 import com.wing.database.model.Show;
@@ -113,7 +114,14 @@ public class ManagerWindow extends JFrame {
 				});
 				break;
 			case "configuration":
-				// TODO show config dialog
+				EventQueue.invokeLater(() -> {
+					try {
+						final ConfigurationDialog configurationDialog = new ConfigurationDialog(managerService);
+						configurationDialog.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 				break;
 			}
 		}

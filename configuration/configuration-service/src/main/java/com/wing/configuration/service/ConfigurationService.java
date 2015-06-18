@@ -20,11 +20,13 @@ public class ConfigurationService {
 	public Configuration loadConfiguration() throws IOException {
 		if (configuration == null) {
 			configuration = new Configuration();
-			final Properties properties = new Properties();
-			properties.load(new FileReader(file));
+			if (file.exists()) {
+				final Properties properties = new Properties();
+				properties.load(new FileReader(file));
 
-			final String value = properties.getProperty(TORRENT_DESTINATION);
-			configuration.torrentDestination = new File(value);
+				final String value = properties.getProperty(TORRENT_DESTINATION);
+				configuration.torrentDestination = new File(value);
+			}
 		}
 		return configuration;
 	}

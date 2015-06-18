@@ -1,8 +1,5 @@
 package com.wing.torrent.downloader;
 
-import static javax.swing.UIManager.getSystemLookAndFeelClassName;
-import static javax.swing.UIManager.setLookAndFeel;
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -20,6 +17,7 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 
+import com.wing.configuration.ui.ConfigurationDialog;
 import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.downloader.components.ProgressCellRender;
@@ -62,7 +60,14 @@ public class DownloaderClientUI extends JFrame {
 				}
 				break;
 			case "configuration":
-				// TODO show configuration dialog
+				EventQueue.invokeLater(() -> {
+					try {
+						final ConfigurationDialog configurationDialog = new ConfigurationDialog(managerService);
+						configurationDialog.setVisible(true);
+					} catch (final Exception e1) {
+						e1.printStackTrace();
+					}
+				});
 			}
 		}
 	}
