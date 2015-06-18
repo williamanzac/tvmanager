@@ -15,7 +15,7 @@ public class ProxyServiceTest {
 
 	@Test
 	public void verifyProxyList() throws Exception {
-		List<String> list = cut.listProxies();
+		final List<String> list = cut.listProxies();
 		System.out.println(list);
 	}
 }

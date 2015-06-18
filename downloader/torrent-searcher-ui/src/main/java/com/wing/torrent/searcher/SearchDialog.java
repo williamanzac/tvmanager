@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
 
 import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
@@ -34,10 +35,10 @@ public class SearchDialog extends JDialog {
 			final String command = event.getActionCommand();
 			if ("OK".equals(command)) {
 				selectedTorrent = tableModel.getTorrents().get(table.getSelectedRow());
-				SearchDialog.this.setVisible(false);
+				setVisible(false);
 			} else if ("Cancel".equals(command)) {
 				selectedTorrent = null;
-				SearchDialog.this.setVisible(false);
+				setVisible(false);
 			}
 		}
 	}
@@ -48,7 +49,7 @@ public class SearchDialog extends JDialog {
 	public static void main(final String[] args) {
 		try {
 			final SearchDialog dialog = new SearchDialog(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -95,14 +96,12 @@ public class SearchDialog extends JDialog {
 	}
 
 	public void searchFor(final String name, final int season, final int episode) throws Exception {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					final List<Torrent> list = managerService.searchForEpisode(name, season, episode);
-					tableModel.setTorrents(list);
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				final List<Torrent> list = managerService.searchForEpisode(name, season, episode);
+				tableModel.setTorrents(list);
+			} catch (final Exception e) {
+				e.printStackTrace();
 			}
 		});
 		setVisible(true);

@@ -30,7 +30,7 @@ public class Torrent {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -39,7 +39,7 @@ public class Torrent {
 		return seeds;
 	}
 
-	public void setSeeds(int seeds) {
+	public void setSeeds(final int seeds) {
 		this.seeds = seeds;
 	}
 
@@ -48,7 +48,7 @@ public class Torrent {
 		return leechers;
 	}
 
-	public void setLeechers(int leechers) {
+	public void setLeechers(final int leechers) {
 		this.leechers = leechers;
 	}
 
@@ -57,7 +57,7 @@ public class Torrent {
 		return size;
 	}
 
-	public void setSize(long size) {
+	public void setSize(final long size) {
 		this.size = size;
 	}
 
@@ -66,7 +66,7 @@ public class Torrent {
 		return hash;
 	}
 
-	public void setHash(String hash) {
+	public void setHash(final String hash) {
 		this.hash = hash;
 	}
 
@@ -75,7 +75,7 @@ public class Torrent {
 		return url;
 	}
 
-	public void setUrl(URL url) {
+	public void setUrl(final URL url) {
 		this.url = url;
 	}
 
@@ -84,7 +84,7 @@ public class Torrent {
 		return pubDate;
 	}
 
-	public void setPubDate(Date pubDate) {
+	public void setPubDate(final Date pubDate) {
 		this.pubDate = pubDate;
 	}
 
@@ -93,7 +93,7 @@ public class Torrent {
 		return categories;
 	}
 
-	public void setCategories(Set<String> categories) {
+	public void setCategories(final Set<String> categories) {
 		this.categories = categories;
 	}
 
@@ -102,7 +102,7 @@ public class Torrent {
 		return state;
 	}
 
-	public void setState(TorrentState state) {
+	public void setState(final TorrentState state) {
 		this.state = state;
 	}
 
@@ -111,7 +111,7 @@ public class Torrent {
 		return percentComplete;
 	}
 
-	public void setPercentComplete(float percentComplete) {
+	public void setPercentComplete(final float percentComplete) {
 		this.percentComplete = percentComplete;
 	}
 }

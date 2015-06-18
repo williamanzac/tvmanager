@@ -14,6 +14,7 @@ public class Episode implements Comparable<Episode> {
 	private String link;
 	private String title;
 	private EpisodeState state;
+	private String torrentHash;
 
 	// <epnum>1</epnum>
 	// <seasonnum>01</seasonnum>
@@ -27,7 +28,7 @@ public class Episode implements Comparable<Episode> {
 		return number;
 	}
 
-	public void setNumber(int number) {
+	public void setNumber(final int number) {
 		this.number = number;
 	}
 
@@ -36,7 +37,7 @@ public class Episode implements Comparable<Episode> {
 		return season;
 	}
 
-	public void setSeason(int season) {
+	public void setSeason(final int season) {
 		this.season = season;
 	}
 
@@ -45,7 +46,7 @@ public class Episode implements Comparable<Episode> {
 		return airdate;
 	}
 
-	public void setAirdate(Date airdate) {
+	public void setAirdate(final Date airdate) {
 		this.airdate = airdate;
 	}
 
@@ -54,7 +55,7 @@ public class Episode implements Comparable<Episode> {
 		return link;
 	}
 
-	public void setLink(String link) {
+	public void setLink(final String link) {
 		this.link = link;
 	}
 
@@ -63,21 +64,22 @@ public class Episode implements Comparable<Episode> {
 		return title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
 	@Override
-	public int compareTo(Episode that) {
-		int compare = Integer.compare(epnum, that.epnum);
+	public int compareTo(final Episode that) {
+		final int compare = Integer.compare(epnum, that.epnum);
 		return compare;
 	}
 
+	@XmlElement
 	public int getEpnum() {
 		return epnum;
 	}
 
-	public void setEpnum(int epnum) {
+	public void setEpnum(final int epnum) {
 		this.epnum = epnum;
 	}
 
@@ -86,7 +88,16 @@ public class Episode implements Comparable<Episode> {
 		return state;
 	}
 
-	public void setState(EpisodeState state) {
+	public void setState(final EpisodeState state) {
 		this.state = state;
+	}
+
+	@XmlElement
+	public String getTorrentHash() {
+		return torrentHash;
+	}
+
+	public void setTorrentHash(final String torrentHash) {
+		this.torrentHash = torrentHash;
 	}
 }

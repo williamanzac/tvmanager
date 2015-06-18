@@ -1,7 +1,6 @@
 package com.wing.database.service;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +45,7 @@ public abstract class FilePersistenceManager<T> implements PersistenceManager<T>
 	@Override
 	public List<T> list() throws Exception {
 		final File baseDir = baseDir();
-		final String[] files = baseDir.list(new FilenameFilter() {
-			@Override
-			public boolean accept(final File dir, final String name) {
-				return name.endsWith(".xml");
-			}
-		});
+		final String[] files = baseDir.list((dir, name) -> name.endsWith(".xml"));
 		final List<T> list = new ArrayList<>();
 		if (files != null && files.length > 0) {
 			for (final String name : files) {

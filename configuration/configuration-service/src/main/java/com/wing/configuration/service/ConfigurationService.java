@@ -32,16 +32,14 @@ public class ConfigurationService {
 	public void saveConfiguration() throws IOException {
 		final Properties properties = new Properties();
 
-		properties.setProperty(TORRENT_DESTINATION,
-				configuration.torrentDestination.getAbsolutePath());
+		properties.setProperty(TORRENT_DESTINATION, configuration.torrentDestination.getAbsolutePath());
 
 		properties.store(new FileWriter(file), "");
 	}
 
 	String fieldNameToString(final Field field) {
 		final String name = field.getName();
-		final String[] camelCase = StringUtils
-				.splitByCharacterTypeCamelCase(name);
+		final String[] camelCase = StringUtils.splitByCharacterTypeCamelCase(name);
 		final String join = StringUtils.join(camelCase, '.');
 		return join.toLowerCase();
 	}
@@ -51,16 +49,14 @@ public class ConfigurationService {
 		return properties.getProperty(key);
 	}
 
-	<T> T getPropertyForField(final Field field, final Properties properties,
-			final Class<T> clazz) {
+	<T> T getPropertyForField(final Field field, final Properties properties, final Class<T> clazz) {
 		final String key = fieldNameToString(field);
 		final String strVal = properties.getProperty(key);
 		return null;
 	}
 
-	void configurationFromProperties(final Properties properties,
-			final Configuration configuration) throws IllegalArgumentException,
-			IllegalAccessException {
+	void configurationFromProperties(final Properties properties, final Configuration configuration)
+			throws IllegalArgumentException, IllegalAccessException {
 		final Field[] fields = configuration.getClass().getFields();
 		if (fields == null) {
 			return;

@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,6 +15,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
 
 import com.wing.database.model.Show;
 import com.wing.search.service.ShowSearchService;
@@ -36,15 +38,20 @@ public class SearchDialog extends JDialog {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final String command = event.getActionCommand();
-			if ("OK".equals(command)) {
+			switch (command){
+			case "OK":
 				selectedShow = tableModel.getShows().get(table.getSelectedRow());
-				SearchDialog.this.setVisible(false);
-			} else if ("Cancel".equals(command)) {
+				setVisible(false);
+				break;
+			case "Cancel":
 				selectedShow = null;
-				SearchDialog.this.setVisible(false);
-			} else if ("Search".equals(command)) {
+				setVisible(false);
+				break;
+			case "Search":
 				try {
-					tableModel.setShows(searchService.searchShow(textField.getText()));
+					final String show = textField.getText();
+					final List<Show> shows = searchService.searchShow(show);
+					tableModel.setShows(shows);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}
@@ -58,7 +65,7 @@ public class SearchDialog extends JDialog {
 	public static void main(final String[] args) {
 		try {
 			final SearchDialog dialog = new SearchDialog(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (final Exception e) {
 			e.printStackTrace();

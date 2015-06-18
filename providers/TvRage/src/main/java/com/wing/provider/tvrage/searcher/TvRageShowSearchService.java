@@ -24,6 +24,7 @@ public class TvRageShowSearchService extends HttpShowSearchService {
 	private final SAXReader xmlReader = new SAXReader();
 	private final SimpleDateFormat episodeFormat = new SimpleDateFormat("yyyy-M-d");
 
+	@Override
 	public List<Show> searchShow(final String show) throws Exception {
 		final String url = format(searchURL, URLEncoder.encode(show, "UTF-8"));
 		final InputStream response = getResponse(url);
@@ -31,6 +32,7 @@ public class TvRageShowSearchService extends HttpShowSearchService {
 		return processShowXML(document);
 	}
 
+	@Override
 	public List<Episode> getEpisodeList(final int showId) throws Exception {
 		final String url = format(episodeURL, Integer.toString(showId));
 		final InputStream response = getResponse(url);
@@ -58,7 +60,7 @@ public class TvRageShowSearchService extends HttpShowSearchService {
 				final int number = Integer.parseInt(numberNode.getTextTrim());
 				final int seasonNum = Integer.parseInt(seasonNumNode.getTextTrim());
 				final String title = titleNode.getTextTrim();
-				String textTrim = airdateNode.getTextTrim();
+				final String textTrim = airdateNode.getTextTrim();
 				final Date airdate = episodeFormat.parse(textTrim);
 
 				episode.setAirdate(airdate);

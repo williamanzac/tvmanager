@@ -14,7 +14,7 @@ public class ShowTableModel extends AbstractTableModel {
 	private List<Show> shows = new ArrayList<>();
 
 	@Override
-	public String getColumnName(int column) {
+	public String getColumnName(final int column) {
 		switch (column) {
 		case 0:
 			return "Name";
@@ -26,7 +26,7 @@ public class ShowTableModel extends AbstractTableModel {
 	}
 
 	@Override
-	public Class<?> getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(final int columnIndex) {
 		switch (columnIndex) {
 		case 0:
 			return String.class;
@@ -48,8 +48,8 @@ public class ShowTableModel extends AbstractTableModel {
 	}
 
 	@Override
-	public Object getValueAt(int row, int col) {
-		Show show = shows.get(row);
+	public Object getValueAt(final int row, final int col) {
+		final Show show = shows.get(row);
 		if (show != null) {
 			switch (col) {
 			case 0:
@@ -65,7 +65,7 @@ public class ShowTableModel extends AbstractTableModel {
 		return shows;
 	}
 
-	public void setShows(List<Show> shows) {
+	public void setShows(final List<Show> shows) {
 		this.shows = shows;
 		fireTableDataChanged();
 	}

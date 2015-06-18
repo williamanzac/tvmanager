@@ -25,15 +25,13 @@ public class Main {
 		final TorrentSearchService torrentSearchService = new TorrentProjectTorrentSearchService();
 		final DefaultManagerService managerService = new DefaultManagerService(searchService, persistenceManager,
 				torrentPersistenceManager, torrentSearchService);
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					final ManagerWindow frame = new ManagerWindow(managerService, searchService);
-					frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-					frame.setVisible(true);
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				final ManagerWindow frame = new ManagerWindow(managerService, searchService);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setVisible(true);
+			} catch (final Exception e) {
+				e.printStackTrace();
 			}
 		});
 		// EventQueue.invokeLater(new Runnable() {

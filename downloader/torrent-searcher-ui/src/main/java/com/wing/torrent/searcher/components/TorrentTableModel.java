@@ -14,8 +14,8 @@ public class TorrentTableModel extends AbstractTableModel {
 
 	private List<Torrent> torrents = new ArrayList<>();
 
-	private String[] columnNames = { "Title", "Categories", "Date", "Size", "Seeds", "Leachers", "Hash" };
-	private Class<?>[] columnTypes = { String.class, String.class, Date.class, Long.class, Integer.class,
+	private final String[] columnNames = { "Title", "Categories", "Date", "Size", "Seeds", "Leachers", "Hash" };
+	private final Class<?>[] columnTypes = { String.class, String.class, Date.class, Long.class, Integer.class,
 			Integer.class, String.class };
 
 	@Override
@@ -24,12 +24,12 @@ public class TorrentTableModel extends AbstractTableModel {
 	}
 
 	@Override
-	public String getColumnName(int column) {
+	public String getColumnName(final int column) {
 		return columnNames[column];
 	}
 
 	@Override
-	public Class<?> getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(final int columnIndex) {
 		return columnTypes[columnIndex];
 	}
 
@@ -39,8 +39,8 @@ public class TorrentTableModel extends AbstractTableModel {
 	}
 
 	@Override
-	public Object getValueAt(int row, int col) {
-		Torrent torrent = torrents.get(row);
+	public Object getValueAt(final int row, final int col) {
+		final Torrent torrent = torrents.get(row);
 		if (torrent != null) {
 			switch (col) {
 			case 0:
@@ -66,7 +66,7 @@ public class TorrentTableModel extends AbstractTableModel {
 		return torrents;
 	}
 
-	public void setTorrents(List<Torrent> torrents) {
+	public void setTorrents(final List<Torrent> torrents) {
 		this.torrents = torrents;
 		fireTableDataChanged();
 	}

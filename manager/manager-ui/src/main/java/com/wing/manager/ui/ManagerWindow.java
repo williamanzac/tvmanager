@@ -47,8 +47,6 @@ public class ManagerWindow extends JFrame {
 
 	private final JButton updateButton;
 
-	private final JButton downloadButton;
-
 	private final JButton copyButton;
 
 	private final JButton watchButton;
@@ -58,64 +56,67 @@ public class ManagerWindow extends JFrame {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final String command = event.getActionCommand();
-			if ("addShow".equals(command)) {
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						final SearchDialog dialog = new SearchDialog(searchService);
-						dialog.setVisible(true);
-						final Show show = dialog.getSelectedShow();
-						if (show != null) {
-							try {
-								listModel.add(show);
-							} catch (final Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				});
-			} else if ("delShow".equals(command)) {
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
+			switch (command) {
+			case "addShow":
+				EventQueue.invokeLater(() -> {
+					final SearchDialog dialog = new SearchDialog(searchService);
+					dialog.setVisible(true);
+					final Show show = dialog.getSelectedShow();
+					if (show != null) {
 						try {
-							listModel.remove(showList.getSelectedIndex());
+							listModel.add(show);
 						} catch (final Exception e) {
 							e.printStackTrace();
 						}
 					}
 				});
-			} else if ("update".equals(command)) {
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						final Show show = showList.getSelectedValue();
-						if (show != null) {
-							try {
-								managerService.updateEpisodes(show);
-								tableModel.setEpisodes(show.getEpisodeList());
-								managerService.saveShow(show);
-							} catch (final Exception e) {
-								e.printStackTrace();
-							}
-						}
+				break;
+			case "delShow":
+				EventQueue.invokeLater(() -> {
+					try {
+						listModel.remove(showList.getSelectedIndex());
+					} catch (final Exception e) {
+						e.printStackTrace();
 					}
 				});
-			} else if ("searchEpisode".equals(command)) {
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						final com.wing.torrent.searcher.SearchDialog dialog = new com.wing.torrent.searcher.SearchDialog(
-								managerService);
-						final Show show = showList.getSelectedValue();
-						final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
+				break;
+			case "update":
+				EventQueue.invokeLater(() -> {
+					final Show show = showList.getSelectedValue();
+					if (show != null) {
 						try {
-							dialog.searchFor(show.getName(), episode.getSeason(), episode.getNumber());
-							final Torrent torrent = dialog.getSelectedTorrent();
-							if (torrent != null) {
-								managerService.saveTorrent(torrent);
-							}
+							managerService.updateEpisodes(show);
+							tableModel.setEpisodes(show.getEpisodeList());
+							managerService.saveShow(show);
 						} catch (final Exception e) {
 							e.printStackTrace();
 						}
 					}
 				});
+				break;
+			case "searchEpisode":
+				EventQueue.invokeLater(() -> {
+					final com.wing.torrent.searcher.SearchDialog dialog = new com.wing.torrent.searcher.SearchDialog(
+							managerService);
+					final Show show = showList.getSelectedValue();
+					final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
+					try {
+						dialog.searchFor(show.getName(), episode.getSeason(), episode.getNumber());
+						final Torrent torrent = dialog.getSelectedTorrent();
+						if (torrent != null) {
+							managerService.saveTorrent(torrent);
+							episode.setTorrentHash(torrent.getHash());
+							episode.setState(EpisodeState.QUEUED);
+							managerService.saveShow(show);
+						}
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				});
+				break;
+			case "configuration":
+				// TODO show config dialog
+				break;
 			}
 		}
 	}
@@ -143,8 +144,6 @@ public class ManagerWindow extends JFrame {
 						|| EpisodeState.WATCHED.compareTo(episode.getState()) < 0);
 				copyButton.setEnabled(episode.getState() == null
 						|| EpisodeState.DOWNLOADED.compareTo(episode.getState()) < 0);
-				downloadButton.setEnabled(episode.getState() == null
-						|| EpisodeState.QUEUED.compareTo(episode.getState()) > 0);
 				searchButton.setEnabled(episode.getState() == null
 						|| EpisodeState.QUEUED.compareTo(episode.getState()) > 0);
 			}
@@ -155,21 +154,19 @@ public class ManagerWindow extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(final String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					final ManagerWindow frame = new ManagerWindow(null, null);
-					frame.setVisible(true);
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				final ManagerWindow frame = new ManagerWindow(null, null);
+				frame.setVisible(true);
+			} catch (final Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
 
 	/**
 	 * Create the frame.
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public ManagerWindow(final ManagerService managerService, final ShowSearchService searchService) throws Exception {
@@ -248,18 +245,18 @@ public class ManagerWindow extends JFrame {
 		copyButton.addActionListener(buttonActions);
 		toolBar.add(copyButton);
 
-		downloadButton = new JButton("Download");
-		downloadButton.setToolTipText("Find and Queue the current Episode for download");
-		downloadButton.setEnabled(false);
-		downloadButton.setActionCommand("downloadEpisode");
-		downloadButton.addActionListener(buttonActions);
-		toolBar.add(downloadButton);
-
 		searchButton = new JButton("Search");
 		searchButton.setToolTipText("Find and Queue the current Episode for download");
 		searchButton.setEnabled(false);
 		searchButton.setActionCommand("searchEpisode");
 		searchButton.addActionListener(buttonActions);
 		toolBar.add(searchButton);
+
+		toolBar.addSeparator();
+
+		final JButton configButton = new JButton("Configuration");
+		configButton.setActionCommand("configuration");
+		configButton.addActionListener(buttonActions);
+		toolBar.add(configButton);
 	}
 }

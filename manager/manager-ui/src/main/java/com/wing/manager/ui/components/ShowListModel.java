@@ -12,7 +12,7 @@ public class ShowListModel extends AbstractListModel<Show> {
 	private static final long serialVersionUID = 2409502622261843596L;
 
 	private final ManagerService managerService;
-	private List<Show> list;
+	private final List<Show> list;
 
 	public ShowListModel(final ManagerService managerService) throws Exception {
 		this.managerService = managerService;
@@ -35,14 +35,14 @@ public class ShowListModel extends AbstractListModel<Show> {
 	}
 
 	public void add(final Show show) throws Exception {
-		int i = list.size();
+		final int i = list.size();
 		list.add(show);
 		managerService.saveShow(show);
 		fireIntervalAdded(this, i, i);
 	}
 
 	public Show remove(final int index) throws Exception {
-		Show show = list.remove(index);
+		final Show show = list.remove(index);
 		managerService.removeShow(show);
 		fireIntervalRemoved(this, index, index);
 		return show;

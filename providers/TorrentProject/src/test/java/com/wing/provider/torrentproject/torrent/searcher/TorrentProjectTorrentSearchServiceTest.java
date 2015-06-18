@@ -22,7 +22,7 @@ public class TorrentProjectTorrentSearchServiceTest {
 	@Test
 	@Ignore
 	public void verifyTorrentSearch() throws Exception {
-		List<Torrent> list = cut.searchTorrent("bones", 10, 20);
+		final List<Torrent> list = cut.searchTorrent("bones", 10, 20);
 		Assert.assertNotNull(list);
 		Assert.assertEquals(15, list.size());
 	}
@@ -31,7 +31,7 @@ public class TorrentProjectTorrentSearchServiceTest {
 	public void verifyParsingRSS() throws Exception {
 		final SAXReader reader = new SAXReader();
 		final Document document = reader.read(getClass().getResourceAsStream("/torrentproject.rss.xml"));
-		List<Torrent> list = cut.parseXML(document);
+		final List<Torrent> list = cut.parseXML(document);
 		Assert.assertNotNull(list);
 		Assert.assertEquals(15, list.size());
 	}

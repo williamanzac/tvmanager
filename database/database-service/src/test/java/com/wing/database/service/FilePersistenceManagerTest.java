@@ -24,13 +24,13 @@ public class FilePersistenceManagerTest {
 
 	@Test
 	public void saveObject() throws Exception {
-		TestObject testing = new TestObject();
+		final TestObject testing = new TestObject();
 		testing.field = "testing";
 		cut.save("test", testing);
 	}
 
 	@Test
 	public void getObject() throws Exception {
-		TestObject object = (TestObject) cut.retrieve("test");
+		final TestObject object = (TestObject) cut.retrieve("test");
 	}
 }
