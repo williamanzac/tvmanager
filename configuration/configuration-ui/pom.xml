@@ -2,13 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.wing</groupId>
-    <artifactId>tvmanager</artifactId>
+    <artifactId>configuration</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>configuration</artifactId>
-  <packaging>pom</packaging>
-  <modules>
-  	<module>configuration-service</module>
-  	<module>configuration-ui</module>
-  </modules>
+  <artifactId>configuration-ui</artifactId>
 </project>

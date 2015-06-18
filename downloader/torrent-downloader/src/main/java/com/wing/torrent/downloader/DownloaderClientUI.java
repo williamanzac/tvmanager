@@ -20,9 +20,8 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 
-import com.wing.configuration.service.ConfigurationService;
 import com.wing.database.model.Torrent;
-import com.wing.database.service.TorrentPersistenceManager;
+import com.wing.manager.service.ManagerService;
 import com.wing.torrent.downloader.components.ProgressCellRender;
 import com.wing.torrent.downloader.components.TorrentTableModel;
 
@@ -34,11 +33,9 @@ public class DownloaderClientUI extends JFrame {
 
 	private final TorrentTableModel tableModel;
 
-	private final TorrentPersistenceManager torrentPersistenceManager;
-
-	private final ConfigurationService configurationService;
-
 	private final TorrentDownloader torrentDownloader;
+
+	private final ManagerService managerService;
 
 	private class ButtonActions implements ActionListener {
 		@Override
@@ -58,7 +55,7 @@ public class DownloaderClientUI extends JFrame {
 						torrent.setTitle(ttorrent.getName());
 						torrent.setHash(ttorrent.getHexInfoHash());
 						tableModel.add(torrent);
-						torrentPersistenceManager.save(torrent.getHash(), torrent);
+						managerService.saveTorrent(torrent);
 					} catch (final Exception e1) {
 						e1.printStackTrace();
 					}
@@ -83,31 +80,12 @@ public class DownloaderClientUI extends JFrame {
 	}
 
 	/**
-	 * Launch the application.
-	 *
-	 * @throws Exception
-	 */
-	public static void main(final String[] args) throws Exception {
-		setLookAndFeel(getSystemLookAndFeelClassName());
-		EventQueue.invokeLater(() -> {
-			try {
-				final DownloaderClientUI frame = new DownloaderClientUI(null, null);
-				frame.setVisible(true);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 *
 	 * @throws Exception
 	 */
-	public DownloaderClientUI(final TorrentPersistenceManager torrentPersistenceManager,
-			final ConfigurationService configurationService) throws Exception {
-		this.torrentPersistenceManager = torrentPersistenceManager;
-		this.configurationService = configurationService;
+	public DownloaderClientUI(final ManagerService managerService) throws Exception {
+		this.managerService = managerService;
 		setTitle("Torrent Download Client");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowActions());
@@ -117,7 +95,7 @@ public class DownloaderClientUI extends JFrame {
 		setContentPane(contentPane);
 		final ButtonActions buttonActions = new ButtonActions();
 
-		tableModel = new TorrentTableModel(torrentPersistenceManager);
+		tableModel = new TorrentTableModel(managerService);
 		final JTable torrentTable = new JTable(tableModel);
 		torrentTable.setFillsViewportHeight(true);
 		torrentTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -145,7 +123,7 @@ public class DownloaderClientUI extends JFrame {
 		configButton.addActionListener(buttonActions);
 		toolBar.add(configButton);
 
-		torrentDownloader = new TorrentDownloader(torrentPersistenceManager, configurationService);
+		torrentDownloader = new TorrentDownloader(managerService);
 		torrentDownloader.start();
 	}
 }

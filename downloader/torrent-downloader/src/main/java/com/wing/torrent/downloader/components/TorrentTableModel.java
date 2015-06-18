@@ -5,7 +5,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import com.wing.database.model.Torrent;
-import com.wing.database.service.TorrentPersistenceManager;
+import com.wing.manager.service.ManagerService;
 
 public class TorrentTableModel extends AbstractTableModel {
 
@@ -14,15 +14,15 @@ public class TorrentTableModel extends AbstractTableModel {
 	private static final String[] columnNames = { "Name", "State", "Downloaded" };
 
 	private List<Torrent> list;
-	private final TorrentPersistenceManager torrentPersistenceManager;
+	private final ManagerService managerService;
 
-	public TorrentTableModel(final TorrentPersistenceManager torrentPersistenceManager) throws Exception {
-		this.torrentPersistenceManager = torrentPersistenceManager;
-		list = torrentPersistenceManager.list();
+	public TorrentTableModel(final ManagerService managerService) throws Exception {
+		this.managerService = managerService;
+		list = managerService.listTorrents();
 		final Thread thread = new Thread(() -> {
 			while (true) {
 				try {
-					list = torrentPersistenceManager.list();
+					list = managerService.listTorrents();
 					fireTableDataChanged();
 					Thread.sleep(10000);
 				} catch (final Exception e) {
@@ -67,13 +67,13 @@ public class TorrentTableModel extends AbstractTableModel {
 	public void add(final Torrent torrent) throws Exception {
 		final int i = list.size();
 		list.add(torrent);
-		torrentPersistenceManager.save(torrent.getHash(),torrent);
+		managerService.saveTorrent(torrent);
 		fireTableRowsInserted(i, i);
 	}
 
 	public Torrent remove(final int index) throws Exception {
 		final Torrent torrent = list.remove(index);
-		// managerService.removeTorrent(torrent); TODO
+		managerService.removeTorrent(torrent);
 		fireTableRowsDeleted(index, index);
 		return torrent;
 	}

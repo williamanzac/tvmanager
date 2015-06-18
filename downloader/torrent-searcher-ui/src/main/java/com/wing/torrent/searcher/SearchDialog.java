@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.WindowConstants;
 
 import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
@@ -40,19 +39,6 @@ public class SearchDialog extends JDialog {
 				selectedTorrent = null;
 				setVisible(false);
 			}
-		}
-	}
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(final String[] args) {
-		try {
-			final SearchDialog dialog = new SearchDialog(null);
-			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (final Exception e) {
-			e.printStackTrace();
 		}
 	}
 

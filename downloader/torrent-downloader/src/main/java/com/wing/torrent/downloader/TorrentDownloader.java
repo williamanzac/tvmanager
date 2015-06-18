@@ -14,18 +14,17 @@ import org.apache.commons.io.IOUtils;
 import com.turn.ttorrent.client.Client;
 import com.turn.ttorrent.client.Client.ClientState;
 import com.turn.ttorrent.client.SharedTorrent;
-import com.wing.configuration.service.ConfigurationService;
 import com.wing.database.model.Configuration;
 import com.wing.database.model.Torrent;
 import com.wing.database.model.TorrentState;
-import com.wing.database.service.TorrentPersistenceManager;
+import com.wing.manager.service.ManagerService;
 
 public class TorrentDownloader {
 
 	private final List<Torrent> queue = new ArrayList<>();
 	private final Map<Client, Torrent> downloadQueue = new HashMap<>();
 
-	private final TorrentPersistenceManager torrentPersistenceManager;
+	private final ManagerService managerService;
 	// private final ConfigurationService configurationService;
 	private final Thread monitorThread;
 	private boolean running = true;
@@ -66,30 +65,28 @@ public class TorrentDownloader {
 				break;
 			}
 			try {
-				torrentPersistenceManager.save(torrent.getHash(), torrent);
+				managerService.saveTorrent(torrent);
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	public TorrentDownloader(final TorrentPersistenceManager torrentPersistenceManager,
-			final ConfigurationService configurationService) {
+	public TorrentDownloader(final ManagerService managerService) {
 		super();
 		final DownloadObserver observer = new DownloadObserver();
-		this.torrentPersistenceManager = torrentPersistenceManager;
-		// this.configurationService = configurationService;
+		this.managerService = managerService;
 		monitorThread = new Thread(() -> {
 			while (running) {
 				try {
-					final List<Torrent> torrents = torrentPersistenceManager.list();
+					final List<Torrent> torrents = managerService.listTorrents();
 					for (final Torrent torrent1 : torrents) {
 						if (!queue.contains(torrent1) && TorrentState.DONE != torrent1.getState()
 								&& TorrentState.ERROR != torrent1.getState()) {
 							queue.add(torrent1);
 							if (torrent1.getState() == null) {
 								torrent1.setState(TorrentState.QUEUED);
-								torrentPersistenceManager.save(torrent1.getHash(), torrent1);
+								managerService.saveTorrent(torrent1);
 							}
 						}
 					}
@@ -97,7 +94,7 @@ public class TorrentDownloader {
 				if (downloadQueue.isEmpty() && !queue.isEmpty()) {
 					final Torrent torrent2 = queue.get(0);
 					final byte[] byteArray = IOUtils.toByteArray(torrent2.getUrl().openStream());
-					final Configuration loadConfiguration = configurationService.loadConfiguration();
+					final Configuration loadConfiguration = managerService.loadConfiguration();
 					final File torrentDestination = loadConfiguration.torrentDestination;
 					final SharedTorrent torrent = new SharedTorrent(byteArray, torrentDestination);
 					final Client client = new Client(InetAddress.getLocalHost(), torrent);
@@ -109,7 +106,7 @@ public class TorrentDownloader {
 
 					torrent2.setTitle(torrent.getName());
 					torrent2.setState(TorrentState.DOWNLOADING);
-					torrentPersistenceManager.save(torrent2.getHash(), torrent2);
+					managerService.saveTorrent(torrent2);
 
 					client.waitForCompletion();
 				}
@@ -118,7 +115,7 @@ public class TorrentDownloader {
 				e.printStackTrace();
 			}
 		}
-	}	);
+	});
 	}
 
 	public void start() {

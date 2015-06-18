@@ -18,7 +18,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
 import com.wing.database.model.Show;
-import com.wing.search.service.ShowSearchService;
+import com.wing.manager.service.ManagerService;
 import com.wing.search.ui.model.ShowTableModel;
 
 public class SearchDialog extends JDialog {
@@ -31,14 +31,14 @@ public class SearchDialog extends JDialog {
 	ShowTableModel tableModel = new ShowTableModel();
 	JButton btnNewButton;
 
-	private final ShowSearchService searchService;
+	private final ManagerService managerService;
 	private Show selectedShow;
 
 	private class ButtonActions implements ActionListener {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final String command = event.getActionCommand();
-			switch (command){
+			switch (command) {
 			case "OK":
 				selectedShow = tableModel.getShows().get(table.getSelectedRow());
 				setVisible(false);
@@ -50,7 +50,7 @@ public class SearchDialog extends JDialog {
 			case "Search":
 				try {
 					final String show = textField.getText();
-					final List<Show> shows = searchService.searchShow(show);
+					final List<Show> shows = managerService.searchShow(show);
 					tableModel.setShows(shows);
 				} catch (final Exception e) {
 					e.printStackTrace();
@@ -60,23 +60,10 @@ public class SearchDialog extends JDialog {
 	}
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(final String[] args) {
-		try {
-			final SearchDialog dialog = new SearchDialog(null);
-			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
-	public SearchDialog(final ShowSearchService searchService) {
-		this.searchService = searchService;
+	public SearchDialog(final ManagerService managerService) {
+		this.managerService = managerService;
 		final ButtonActions buttonActions = new ButtonActions();
 		setBounds(100, 100, 450, 300);
 		setModal(true);

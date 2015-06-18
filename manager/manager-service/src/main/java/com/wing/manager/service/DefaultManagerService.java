@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.wing.configuration.service.ConfigurationService;
 import com.wing.database.api.PersistenceManager;
+import com.wing.database.model.Configuration;
 import com.wing.database.model.Episode;
 import com.wing.database.model.Show;
 import com.wing.database.model.Torrent;
@@ -17,14 +19,17 @@ public class DefaultManagerService implements ManagerService {
 	private final PersistenceManager<Show> showManager;
 	private final PersistenceManager<Torrent> torrentPersistenceManager;
 	private final TorrentSearchService torrentSearchService;
+	private final ConfigurationService configurationService;
 
 	public DefaultManagerService(final ShowSearchService searchService, final PersistenceManager<Show> showManager,
-			final PersistenceManager<Torrent> torrentPersistenceManager, final TorrentSearchService torrentSearchService) {
+			final PersistenceManager<Torrent> torrentPersistenceManager,
+			final TorrentSearchService torrentSearchService, final ConfigurationService configurationService) {
 		super();
 		this.searchService = searchService;
 		this.showManager = showManager;
 		this.torrentPersistenceManager = torrentPersistenceManager;
 		this.torrentSearchService = torrentSearchService;
+		this.configurationService = configurationService;
 	}
 
 	@Override
@@ -64,9 +69,24 @@ public class DefaultManagerService implements ManagerService {
 	public void saveTorrent(final Torrent torrent) throws Exception {
 		torrentPersistenceManager.save(torrent.getHash(), torrent);
 	}
+	
+	@Override
+	public void removeTorrent(Torrent torrent) throws Exception {
+		torrentPersistenceManager.delete(torrent.getHash());
+	}
 
 	@Override
 	public List<Torrent> searchForEpisode(final String name, final int season, final int episode) throws Exception {
 		return torrentSearchService.searchTorrent(name, season, episode);
+	}
+
+	@Override
+	public Configuration loadConfiguration() throws Exception {
+		return configurationService.loadConfiguration();
+	}
+
+	@Override
+	public void saveConfiguration() throws Exception {
+		configurationService.saveConfiguration();
 	}
 }

@@ -25,7 +25,6 @@ import com.wing.manager.service.ManagerService;
 import com.wing.manager.ui.components.EpisodeTableModel;
 import com.wing.manager.ui.components.ShowListCellRenderer;
 import com.wing.manager.ui.components.ShowListModel;
-import com.wing.search.service.ShowSearchService;
 import com.wing.search.ui.SearchDialog;
 
 public class ManagerWindow extends JFrame {
@@ -36,7 +35,6 @@ public class ManagerWindow extends JFrame {
 	private final JTable episodeTable;
 
 	private final ManagerService managerService;
-	private final ShowSearchService searchService;
 
 	private final ShowListModel listModel;
 	private final JList<Show> showList;
@@ -59,7 +57,7 @@ public class ManagerWindow extends JFrame {
 			switch (command) {
 			case "addShow":
 				EventQueue.invokeLater(() -> {
-					final SearchDialog dialog = new SearchDialog(searchService);
+					final SearchDialog dialog = new SearchDialog(managerService);
 					dialog.setVisible(true);
 					final Show show = dialog.getSelectedShow();
 					if (show != null) {
@@ -151,28 +149,13 @@ public class ManagerWindow extends JFrame {
 	}
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(final String[] args) {
-		EventQueue.invokeLater(() -> {
-			try {
-				final ManagerWindow frame = new ManagerWindow(null, null);
-				frame.setVisible(true);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
-
-	/**
 	 * Create the frame.
 	 *
 	 * @throws Exception
 	 */
-	public ManagerWindow(final ManagerService managerService, final ShowSearchService searchService) throws Exception {
+	public ManagerWindow(final ManagerService managerService) throws Exception {
 		setTitle("TV Show Manager");
 		this.managerService = managerService;
-		this.searchService = searchService;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(50, 50, 1024, 600);
 		contentPane = new JPanel();
