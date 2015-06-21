@@ -11,5 +11,6 @@
   	<module>torrent-downloader</module>
   	<module>torrent-searcher</module>
   	<module>torrent-searcher-ui</module>
+  	<module>torrent-downloader-ui</module>
   </modules>
 </project>

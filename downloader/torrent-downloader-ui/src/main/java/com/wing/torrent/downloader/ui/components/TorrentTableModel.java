@@ -1,4 +1,4 @@
-package com.wing.torrent.downloader.components;
+package com.wing.torrent.downloader.ui.components;
 
 import java.util.List;
 

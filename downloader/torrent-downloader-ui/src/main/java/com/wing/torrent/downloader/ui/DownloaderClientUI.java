@@ -1,4 +1,4 @@
-package com.wing.torrent.downloader;
+package com.wing.torrent.downloader.ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -6,10 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,10 +16,10 @@ import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 
 import com.wing.configuration.ui.ConfigurationDialog;
-import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
-import com.wing.torrent.downloader.components.ProgressCellRender;
-import com.wing.torrent.downloader.components.TorrentTableModel;
+import com.wing.torrent.downloader.TorrentDownloader;
+import com.wing.torrent.downloader.ui.components.ProgressCellRender;
+import com.wing.torrent.downloader.ui.components.TorrentTableModel;
 
 public class DownloaderClientUI extends JFrame {
 
@@ -41,23 +39,23 @@ public class DownloaderClientUI extends JFrame {
 			final String command = e.getActionCommand();
 			switch (command) {
 			case "addTorrent":
-				final JFileChooser chooser = new JFileChooser();
-				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				chooser.showOpenDialog(DownloaderClientUI.this);
-				final File file = chooser.getSelectedFile();
-				if (file != null) {
-					try {
-						final Torrent torrent = new Torrent();
-						final com.turn.ttorrent.common.Torrent ttorrent = com.turn.ttorrent.common.Torrent.load(file);
-						torrent.setUrl(file.toURI().toURL());
-						torrent.setTitle(ttorrent.getName());
-						torrent.setHash(ttorrent.getHexInfoHash());
-						tableModel.add(torrent);
-						managerService.saveTorrent(torrent);
-					} catch (final Exception e1) {
-						e1.printStackTrace();
-					}
-				}
+				// final JFileChooser chooser = new JFileChooser();
+				// chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				// chooser.showOpenDialog(DownloaderClientUI.this);
+				// final File file = chooser.getSelectedFile();
+				// if (file != null) {
+				// try {
+				// final Torrent torrent = new Torrent();
+				// final com.turn.ttorrent.common.Torrent ttorrent = com.turn.ttorrent.common.Torrent.load(file);
+				// torrent.setUrl(file.toURI().toURL());
+				// torrent.setTitle(ttorrent.getName());
+				// torrent.setHash(ttorrent.getHexInfoHash());
+				// tableModel.add(torrent);
+				// managerService.saveTorrent(torrent);
+				// } catch (final Exception e1) {
+				// e1.printStackTrace();
+				// }
+				// }
 				break;
 			case "configuration":
 				EventQueue.invokeLater(() -> {
@@ -89,7 +87,8 @@ public class DownloaderClientUI extends JFrame {
 	 *
 	 * @throws Exception
 	 */
-	public DownloaderClientUI(final ManagerService managerService) throws Exception {
+	public DownloaderClientUI(final ManagerService managerService, final TorrentDownloader torrentDownloader)
+			throws Exception {
 		this.managerService = managerService;
 		setTitle("Torrent Download Client");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -128,7 +127,7 @@ public class DownloaderClientUI extends JFrame {
 		configButton.addActionListener(buttonActions);
 		toolBar.add(configButton);
 
-		torrentDownloader = new TorrentDownloader(managerService);
-		torrentDownloader.start();
+		this.torrentDownloader = torrentDownloader;
+		this.torrentDownloader.start();
 	}
 }

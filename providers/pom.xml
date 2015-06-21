@@ -12,5 +12,7 @@
     <module>TvRage</module>
     <module>PriateBay</module>
     <module>TorrentProject</module>
+    <module>uTorrent</module>
+    <module>TTorrent</module>
   </modules>
 </project>

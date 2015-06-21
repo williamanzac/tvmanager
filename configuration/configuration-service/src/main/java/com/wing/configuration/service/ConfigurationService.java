@@ -14,6 +14,8 @@ import com.wing.database.model.Configuration;
 public class ConfigurationService {
 
 	private static final String TORRENT_DESTINATION = "torrent.destination";
+	private static final String TORRENT_USERNAME = "torrent.username";
+	private static final String TORRENT_PASSWORD = "torrent.password";
 	private static final File file = new File("tvmanager.conf");
 	private Configuration configuration;
 
@@ -24,8 +26,14 @@ public class ConfigurationService {
 				final Properties properties = new Properties();
 				properties.load(new FileReader(file));
 
-				final String value = properties.getProperty(TORRENT_DESTINATION);
+				String value = properties.getProperty(TORRENT_DESTINATION);
 				configuration.torrentDestination = new File(value);
+
+				value = properties.getProperty(TORRENT_USERNAME);
+				configuration.torrentUsername = value;
+
+				value = properties.getProperty(TORRENT_PASSWORD);
+				configuration.torrentPassword = value;
 			}
 		}
 		return configuration;
@@ -35,6 +43,8 @@ public class ConfigurationService {
 		final Properties properties = new Properties();
 
 		properties.setProperty(TORRENT_DESTINATION, configuration.torrentDestination.getAbsolutePath());
+		properties.setProperty(TORRENT_USERNAME, configuration.torrentUsername);
+		properties.setProperty(TORRENT_PASSWORD, configuration.torrentPassword);
 
 		properties.store(new FileWriter(file), "");
 	}

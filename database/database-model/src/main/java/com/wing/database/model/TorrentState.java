@@ -4,5 +4,5 @@ import javax.xml.bind.annotation.XmlEnum;
 
 @XmlEnum
 public enum TorrentState {
-	QUEUED, VALIDATING, DOWNLOADING, ERROR, DONE;
+	QUEUED, VALIDATING, DOWNLOADING, ERROR, PAUSED, WAITING, DONE;
 }

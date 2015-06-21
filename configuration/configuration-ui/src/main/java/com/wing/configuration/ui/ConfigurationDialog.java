@@ -12,6 +12,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
@@ -25,6 +26,8 @@ import com.wing.manager.service.ManagerService;
 public class ConfigurationDialog extends JDialog {
 	private static final long serialVersionUID = -28891122052152460L;
 	private JTextField txtTorrentDestination;
+	private JTextField txtTorrentUsername;
+	private JPasswordField txtTorrentPassword;
 
 	private final ManagerService managerService;
 
@@ -36,6 +39,8 @@ public class ConfigurationDialog extends JDialog {
 			final String command = event.getActionCommand();
 			if ("OK".equals(command)) {
 				configuration.torrentDestination = new File(txtTorrentDestination.getText());
+				configuration.torrentUsername = txtTorrentUsername.getText();
+				configuration.torrentPassword = new String(txtTorrentPassword.getPassword());
 				try {
 					managerService.saveConfiguration();
 				} catch (Exception e) {
@@ -94,7 +99,7 @@ public class ConfigurationDialog extends JDialog {
 				FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"),
 				FormFactory.RELATED_GAP_COLSPEC, FormFactory.BUTTON_COLSPEC, }, new RowSpec[] {
 				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC, }));
+				FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
 
 		final JLabel lblTorrentDestination = new JLabel("Torrent Destination:");
 		lblTorrentDestination.setLabelFor(txtTorrentDestination);
@@ -112,5 +117,23 @@ public class ConfigurationDialog extends JDialog {
 		btnTorrentDestination.setActionCommand("browseDestination");
 		btnTorrentDestination.addActionListener(buttonActions);
 		torrentPanel.add(btnTorrentDestination, "6, 2");
+
+		final JLabel lblTorrentUsername = new JLabel("Torrent Username:");
+		lblTorrentUsername.setLabelFor(txtTorrentUsername);
+		torrentPanel.add(lblTorrentUsername, "2, 4, right, default");
+
+		txtTorrentUsername = new JTextField();
+		torrentPanel.add(txtTorrentUsername, "4, 4, fill, default");
+		txtTorrentUsername.setColumns(10);
+		txtTorrentUsername.setText(configuration.torrentUsername);
+
+		final JLabel lblTorrentPassword = new JLabel("Torrent Password:");
+		lblTorrentPassword.setLabelFor(txtTorrentPassword);
+		torrentPanel.add(lblTorrentPassword, "2, 6, right, default");
+
+		txtTorrentPassword = new JPasswordField();
+		torrentPanel.add(txtTorrentPassword, "4, 6, fill, default");
+		txtTorrentPassword.setColumns(10);
+		txtTorrentPassword.setText(configuration.torrentPassword);
 	}
 }

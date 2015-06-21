@@ -39,7 +39,12 @@
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
-  		<artifactId>torrent-downloader</artifactId>
+  		<artifactId>uTorrent</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.wing</groupId>
+  		<artifactId>torrent-downloader-ui</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
