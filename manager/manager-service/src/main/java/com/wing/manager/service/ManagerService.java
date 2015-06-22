@@ -27,5 +27,5 @@ public interface ManagerService {
 
 	Configuration loadConfiguration() throws Exception;
 
-	void saveConfiguration() throws Exception;
+	void saveConfiguration(Configuration configuration) throws Exception;
 }

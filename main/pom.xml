@@ -10,42 +10,42 @@
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>manager-ui</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>manager-service</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>TvRage</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>database-service</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>TorrentProject</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>configuration-service</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>uTorrent</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>torrent-downloader-ui</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   </dependencies>
 </project>

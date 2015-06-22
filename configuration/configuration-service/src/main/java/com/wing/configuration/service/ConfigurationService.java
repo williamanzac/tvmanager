@@ -39,7 +39,7 @@ public class ConfigurationService {
 		return configuration;
 	}
 
-	public void saveConfiguration() throws IOException {
+	public void saveConfiguration(Configuration configuration) throws IOException {
 		final Properties properties = new Properties();
 
 		properties.setProperty(TORRENT_DESTINATION, configuration.torrentDestination.getAbsolutePath());

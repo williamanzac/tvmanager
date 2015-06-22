@@ -11,17 +11,17 @@
 		<dependency>
 			<groupId>com.wing</groupId>
 			<artifactId>database-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
 			<artifactId>database-service</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
 			<artifactId>manager-service</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -31,12 +31,12 @@
 		<dependency>
 			<groupId>com.wing</groupId>
 			<artifactId>configuration-service</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
 			<artifactId>configuration-ui</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

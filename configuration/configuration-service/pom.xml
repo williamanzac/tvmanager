@@ -10,7 +10,7 @@
   	<dependency>
   		<groupId>com.wing</groupId>
   		<artifactId>database-service</artifactId>
-  		<version>0.0.1-SNAPSHOT</version>
+  		<version>${project.version}</version>
   	</dependency>
   	<dependency>
   		<groupId>commons-lang</groupId>

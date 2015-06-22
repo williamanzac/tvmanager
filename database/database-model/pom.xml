@@ -9,7 +9,7 @@
   </parent>
   <groupId>com.wing</groupId>
   <artifactId>database-model</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>${project.version}</version>
   <name>database-model</name>
   <url>http://maven.apache.org</url>
   <properties>

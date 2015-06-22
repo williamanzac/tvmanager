@@ -12,12 +12,12 @@
 		<dependency>
 			<groupId>com.wing</groupId>
 			<artifactId>torrent-searcher</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
 			<artifactId>database-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-httpclient</groupId>

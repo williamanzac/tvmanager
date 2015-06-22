@@ -42,7 +42,7 @@ public class ConfigurationDialog extends JDialog {
 				configuration.torrentUsername = txtTorrentUsername.getText();
 				configuration.torrentPassword = new String(txtTorrentPassword.getPassword());
 				try {
-					managerService.saveConfiguration();
+					managerService.saveConfiguration(configuration);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
