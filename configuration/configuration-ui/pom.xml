@@ -17,5 +17,10 @@
   		<artifactId>manager-service</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.jgoodies</groupId>
+  		<artifactId>forms</artifactId>
+  		<version>1.2.1</version>
+  	</dependency>
   </dependencies>
 </project>
