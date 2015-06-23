@@ -6,4 +6,5 @@ public class Configuration {
 	public File torrentDestination;
 	public String torrentUsername;
 	public String torrentPassword;
+	public File showDestination;
 }

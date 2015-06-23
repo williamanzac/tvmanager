@@ -16,6 +16,7 @@ public class ConfigurationService {
 	private static final String TORRENT_DESTINATION = "torrent.destination";
 	private static final String TORRENT_USERNAME = "torrent.username";
 	private static final String TORRENT_PASSWORD = "torrent.password";
+	private static final String SHOW_DESTINATION = "show.destination";
 	private static final File file = new File("tvmanager.conf");
 	private Configuration configuration;
 
@@ -27,13 +28,20 @@ public class ConfigurationService {
 				properties.load(new FileReader(file));
 
 				String value = properties.getProperty(TORRENT_DESTINATION);
-				configuration.torrentDestination = new File(value);
+				if (value != null) {
+					configuration.torrentDestination = new File(value);
+				}
 
 				value = properties.getProperty(TORRENT_USERNAME);
 				configuration.torrentUsername = value;
 
 				value = properties.getProperty(TORRENT_PASSWORD);
 				configuration.torrentPassword = value;
+
+				value = properties.getProperty(SHOW_DESTINATION);
+				if (value != null) {
+					configuration.showDestination = new File(value);
+				}
 			}
 		}
 		return configuration;
@@ -45,6 +53,7 @@ public class ConfigurationService {
 		properties.setProperty(TORRENT_DESTINATION, configuration.torrentDestination.getAbsolutePath());
 		properties.setProperty(TORRENT_USERNAME, configuration.torrentUsername);
 		properties.setProperty(TORRENT_PASSWORD, configuration.torrentPassword);
+		properties.setProperty(SHOW_DESTINATION, configuration.showDestination.getAbsolutePath());
 
 		properties.store(new FileWriter(file), "");
 	}

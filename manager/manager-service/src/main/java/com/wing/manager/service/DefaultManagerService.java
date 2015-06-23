@@ -73,7 +73,10 @@ public class DefaultManagerService implements ManagerService {
 	@Path("/shows/episodes")
 	@Override
 	public void updateEpisodes(final Show show) throws Exception {
-		final SortedSet<Episode> episodeList = new TreeSet<>(show.getEpisodeList());
+		final SortedSet<Episode> episodeList = new TreeSet<>();
+		if (show.getEpisodeList() != null) {
+			episodeList.addAll(show.getEpisodeList());
+		}
 		final List<Episode> newList = searchService.getEpisodeList(show.getId());
 		episodeList.addAll(newList);
 		show.setEpisodeList(episodeList);
@@ -103,7 +106,8 @@ public class DefaultManagerService implements ManagerService {
 	@GET
 	@Path("/shows/search")
 	@Override
-	public List<Torrent> searchForEpisode(@QueryParam("name")final String name, @QueryParam("season")final int season, @QueryParam("episode")final int episode) throws Exception {
+	public List<Torrent> searchForEpisode(@QueryParam("name") final String name,
+			@QueryParam("season") final int season, @QueryParam("episode") final int episode) throws Exception {
 		return torrentSearchService.searchTorrent(name, season, episode);
 	}
 
@@ -119,5 +123,12 @@ public class DefaultManagerService implements ManagerService {
 	@Override
 	public void saveConfiguration(Configuration configuration) throws Exception {
 		configurationService.saveConfiguration(configuration);
+	}
+
+	@GET
+	@Path("/torrents/{hash:.*}")
+	@Override
+	public Torrent getTorrent(@PathParam("hash") String hash) throws Exception {
+		return torrentPersistenceManager.retrieve(hash);
 	}
 }

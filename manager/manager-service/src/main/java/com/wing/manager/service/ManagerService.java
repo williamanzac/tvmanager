@@ -28,4 +28,6 @@ public interface ManagerService {
 	Configuration loadConfiguration() throws Exception;
 
 	void saveConfiguration(Configuration configuration) throws Exception;
+
+	Torrent getTorrent(String hash) throws Exception;
 }

@@ -27,6 +27,7 @@ import com.wing.manager.ui.components.EpisodeTableModel;
 import com.wing.manager.ui.components.ShowListCellRenderer;
 import com.wing.manager.ui.components.ShowListModel;
 import com.wing.search.ui.SearchDialog;
+import com.wing.torrent.copier.ui.CopierDialog;
 
 public class ManagerWindow extends JFrame {
 
@@ -87,6 +88,8 @@ public class ManagerWindow extends JFrame {
 							managerService.updateEpisodes(show);
 							tableModel.setEpisodes(show.getEpisodeList());
 							managerService.saveShow(show);
+							episodeTable.scrollRectToVisible(episodeTable.getCellRect(episodeTable.getRowCount() - 1,
+									0, true));
 						} catch (final Exception e) {
 							e.printStackTrace();
 						}
@@ -113,12 +116,44 @@ public class ManagerWindow extends JFrame {
 					}
 				});
 				break;
+			case "watchEpisode":
+				EventQueue.invokeLater(() -> {
+					final Show selectedShow = showList.getSelectedValue();
+					final Episode selectedEpisode = selectedShow.getEpisodeList().get(episodeTable.getSelectedRow());
+					for (final Episode episode : selectedShow.getEpisodeList()) {
+						episode.setState(EpisodeState.WATCHED);
+						if (episode.equals(selectedEpisode)) {
+							break;
+						}
+					}
+					try {
+						managerService.saveShow(selectedShow);
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				});
+				break;
+			case "copyEpisode":
+				EventQueue.invokeLater(() -> {
+					final CopierDialog dialog = new CopierDialog(managerService);
+					final Show show = showList.getSelectedValue();
+					final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
+					if (episode.getTorrentHash() != null) {
+						try {
+							final Torrent torrent = managerService.getTorrent(episode.getTorrentHash());
+							dialog.manageTorrentFiles(torrent);
+						} catch (final Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				break;
 			case "configuration":
 				EventQueue.invokeLater(() -> {
 					try {
 						final ConfigurationDialog configurationDialog = new ConfigurationDialog(managerService);
 						configurationDialog.setVisible(true);
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						e.printStackTrace();
 					}
 				});
@@ -134,6 +169,7 @@ public class ManagerWindow extends JFrame {
 			final boolean b = show != null;
 			if (b) {
 				tableModel.setEpisodes(show.getEpisodeList());
+				episodeTable.scrollRectToVisible(episodeTable.getCellRect(episodeTable.getRowCount() - 1, 0, true));
 			}
 			delShowButton.setEnabled(b);
 			updateButton.setEnabled(b);
@@ -147,9 +183,9 @@ public class ManagerWindow extends JFrame {
 				final Show show = listModel.getElementAt(showList.getSelectedIndex());
 				final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
 				watchButton.setEnabled(episode.getState() == null
-						|| EpisodeState.WATCHED.compareTo(episode.getState()) < 0);
+						|| EpisodeState.WATCHED.compareTo(episode.getState()) > 0);
 				copyButton.setEnabled(episode.getState() == null
-						|| EpisodeState.DOWNLOADED.compareTo(episode.getState()) < 0);
+						|| EpisodeState.DOWNLOADED.compareTo(episode.getState()) > 0);
 				searchButton.setEnabled(episode.getState() == null
 						|| EpisodeState.QUEUED.compareTo(episode.getState()) > 0);
 			}

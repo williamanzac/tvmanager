@@ -1,0 +1,209 @@
+package com.wing.torrent.copier.ui;
+
+import static javax.swing.UIManager.getSystemLookAndFeelClassName;
+import static javax.swing.UIManager.setLookAndFeel;
+
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
+import com.wing.database.model.Configuration;
+import com.wing.database.model.Torrent;
+import com.wing.manager.service.ManagerService;
+import com.wing.torrent.copier.TorrentCopier;
+import com.wing.torrent.copier.ui.components.CheckTreeManager;
+import com.wing.torrent.copier.ui.components.FileTreeCellRenderer;
+
+public class CopierDialog extends JDialog {
+	private static final long serialVersionUID = 6735931867561967734L;
+
+	private final JPanel contentPanel = new JPanel();
+	private final FileSystemView fileSystemView;
+	private DefaultTreeModel treeModel;
+	private JTree tree;
+
+	private final ManagerService managerService;
+
+	private CheckTreeManager checkTreeManager;
+	private final TorrentCopier copier = new TorrentCopier();
+
+	private class ButtonActions implements ActionListener {
+		@Override
+		public void actionPerformed(final ActionEvent event) {
+			final String command = event.getActionCommand();
+			switch (command) {
+			case "move":
+				EventQueue.invokeLater(() -> {
+					try {
+						final Configuration configuration = managerService.loadConfiguration();
+						final File targetDir = configuration.showDestination;
+						final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
+						for (final TreePath path : checkedPaths) {
+							final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path
+									.getLastPathComponent();
+							final File source = (File) sourceNode.getUserObject();
+							final File dest = new File(targetDir, source.getName());
+							System.out.println("moving: " + source + " to " + dest);
+							copier.moveFileTo(source, dest);
+						}
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				});
+				break;
+			case "copy":
+				EventQueue.invokeLater(() -> {
+					try {
+						final Configuration configuration = managerService.loadConfiguration();
+						final File targetDir = configuration.showDestination;
+						final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
+						for (final TreePath path : checkedPaths) {
+							final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path
+									.getLastPathComponent();
+							final File source = (File) sourceNode.getUserObject();
+							final File dest = new File(targetDir, source.getName());
+							System.out.println("copying: " + source + " to " + dest);
+							copier.copyFileTo(source, dest);
+						}
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				});
+				break;
+			case "delete":
+				EventQueue.invokeLater(() -> {
+					try {
+						final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
+						for (final TreePath path : checkedPaths) {
+							final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path
+									.getLastPathComponent();
+							final File source = (File) sourceNode.getUserObject();
+							System.out.println("deleting: " + source);
+							copier.removeFile(source);
+						}
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				});
+				break;
+			case "OK":
+				CopierDialog.this.setVisible(false);
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(final String[] args) {
+		try {
+			setLookAndFeel(getSystemLookAndFeelClassName());
+			final CopierDialog dialog = new CopierDialog(null);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	public CopierDialog(final ManagerService managerService) {
+		this.managerService = managerService;
+		setModal(true);
+		setTitle("Torrent File Manager");
+		setBounds(100, 100, 450, 300);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setLayout(new BorderLayout(0, 0));
+		fileSystemView = FileSystemView.getFileSystemView();
+		final ButtonActions buttonActions = new ButtonActions();
+
+		{
+			final JScrollPane scrollPane = new JScrollPane();
+			contentPanel.add(scrollPane);
+			{
+				final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+				treeModel = new DefaultTreeModel(root);
+
+				tree = new JTree(treeModel);
+				tree.setRootVisible(true);
+				tree.setCellRenderer(new FileTreeCellRenderer());
+				tree.expandRow(0);
+				checkTreeManager = new CheckTreeManager(tree);
+				scrollPane.setViewportView(tree);
+			}
+		}
+		{
+			final JPanel buttonPane = new JPanel();
+			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			{
+				final JButton moveButton = new JButton("Move");
+				moveButton.setActionCommand("move");
+				moveButton.addActionListener(buttonActions);
+				buttonPane.add(moveButton);
+			}
+			{
+				final JButton copyButton = new JButton("Copy");
+				copyButton.setActionCommand("copy");
+				copyButton.addActionListener(buttonActions);
+				buttonPane.add(copyButton);
+			}
+			{
+				final JButton delButton = new JButton("Delete");
+				delButton.setActionCommand("delete");
+				delButton.addActionListener(buttonActions);
+				buttonPane.add(delButton);
+			}
+			{
+				final JButton okButton = new JButton("OK");
+				okButton.setActionCommand("OK");
+				okButton.addActionListener(buttonActions);
+				buttonPane.add(okButton);
+				getRootPane().setDefaultButton(okButton);
+			}
+		}
+	}
+
+	public void manageTorrentFiles(final Torrent torrent) throws Exception {
+		EventQueue.invokeLater(() -> {
+			Configuration configuration;
+			try {
+				configuration = managerService.loadConfiguration();
+				final File dest = configuration.torrentDestination;
+				final String title = torrent.getTitle();
+				final File source = new File(dest, title);
+				System.out.println(source);
+				final DefaultMutableTreeNode root = new DefaultMutableTreeNode(source);
+				final File[] files = fileSystemView.getFiles(source, true); // !!
+				System.out.println(files);
+				for (final File child : files) {
+					System.out.println(child);
+					root.add(new DefaultMutableTreeNode(child));
+				}
+				treeModel.setRoot(root);
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
+		});
+		setVisible(true);
+	}
+}

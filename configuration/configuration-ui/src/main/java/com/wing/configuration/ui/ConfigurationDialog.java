@@ -28,6 +28,7 @@ public class ConfigurationDialog extends JDialog {
 	private JTextField txtTorrentDestination;
 	private JTextField txtTorrentUsername;
 	private JPasswordField txtTorrentPassword;
+	private JTextField txtShowDestination;
 
 	private final ManagerService managerService;
 
@@ -37,26 +38,36 @@ public class ConfigurationDialog extends JDialog {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final String command = event.getActionCommand();
-			if ("OK".equals(command)) {
+			switch (command) {
+			case "OK":
 				configuration.torrentDestination = new File(txtTorrentDestination.getText());
 				configuration.torrentUsername = txtTorrentUsername.getText();
 				configuration.torrentPassword = new String(txtTorrentPassword.getPassword());
+				configuration.showDestination = new File(txtShowDestination.getText());
 				try {
 					managerService.saveConfiguration(configuration);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 				ConfigurationDialog.this.setVisible(false);
-			} else if ("Cancel".equals(command)) {
+				break;
+			case "Cancel":
 				ConfigurationDialog.this.setVisible(false);
-			} else if ("browseDestination".equals(command)) {
+				break;
+			case "browseDestination":
+			case "browseShowDestination":
 				final JFileChooser chooser = new JFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				chooser.showOpenDialog(ConfigurationDialog.this);
 				final File targetDir = chooser.getSelectedFile();
 				if (targetDir != null && targetDir.isDirectory()) {
-					txtTorrentDestination.setText(targetDir.getAbsolutePath());
+					if (command.equals("browseDestination")) {
+						txtTorrentDestination.setText(targetDir.getAbsolutePath());
+					} else {
+						txtShowDestination.setText(targetDir.getAbsolutePath());
+					}
 				}
+				break;
 			}
 		}
 	}
@@ -108,7 +119,7 @@ public class ConfigurationDialog extends JDialog {
 		txtTorrentDestination = new JTextField();
 		torrentPanel.add(txtTorrentDestination, "4, 2, fill, default");
 		txtTorrentDestination.setColumns(10);
-		final File destination = configuration.torrentDestination;
+		File destination = configuration.torrentDestination;
 		if (destination != null) {
 			txtTorrentDestination.setText(destination.getAbsolutePath());
 		}
@@ -135,5 +146,30 @@ public class ConfigurationDialog extends JDialog {
 		torrentPanel.add(txtTorrentPassword, "4, 6, fill, default");
 		txtTorrentPassword.setColumns(10);
 		txtTorrentPassword.setText(configuration.torrentPassword);
+
+		final JPanel showPanel = new JPanel();
+		tabbedPane.addTab("Show", null, showPanel, null);
+		showPanel.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.RELATED_GAP_COLSPEC,
+				FormFactory.DEFAULT_COLSPEC, FormFactory.RELATED_GAP_COLSPEC, ColumnSpec.decode("default:grow"),
+				FormFactory.RELATED_GAP_COLSPEC, FormFactory.BUTTON_COLSPEC, }, new RowSpec[] {
+				FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC, FormFactory.RELATED_GAP_ROWSPEC, FormFactory.DEFAULT_ROWSPEC, }));
+
+		final JLabel lblShowDestination = new JLabel("Show Destination:");
+		lblShowDestination.setLabelFor(txtShowDestination);
+		showPanel.add(lblShowDestination, "2, 2, right, default");
+
+		txtShowDestination = new JTextField();
+		showPanel.add(txtShowDestination, "4, 2, fill, default");
+		txtShowDestination.setColumns(10);
+		destination = configuration.showDestination;
+		if (destination != null) {
+			txtShowDestination.setText(destination.getAbsolutePath());
+		}
+
+		final JButton btnShowDestination = new JButton("Browse");
+		btnShowDestination.setActionCommand("browseShowDestination");
+		btnShowDestination.addActionListener(buttonActions);
+		showPanel.add(btnShowDestination, "6, 2");
 	}
 }

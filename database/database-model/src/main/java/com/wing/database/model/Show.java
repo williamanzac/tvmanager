@@ -1,5 +1,6 @@
 package com.wing.database.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Show {
 	private String status;
 	private String classification;
 	private List<String> genres;
-	private List<Episode> episodeList;
+	private List<Episode> episodeList = new ArrayList<>();
 
 	// <showid>2930</showid>
 	// <name>Buffy the Vampire Slayer</name>

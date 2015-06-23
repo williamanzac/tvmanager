@@ -15,7 +15,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
-import javax.swing.WindowConstants;
 
 import com.wing.database.model.Show;
 import com.wing.manager.service.ManagerService;
@@ -67,6 +66,7 @@ public class SearchDialog extends JDialog {
 		final ButtonActions buttonActions = new ButtonActions();
 		setBounds(100, 100, 450, 300);
 		setModal(true);
+		setTitle("Add Show");
 		getContentPane().setLayout(new BorderLayout());
 		final JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
