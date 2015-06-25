@@ -153,9 +153,15 @@ public class TTorrentTorrentDownloader extends TorrentDownloader {
 	}
 
 	@Override
-	public void addTorrent(File torrent) {
-		// TODO Auto-generated method stub
-
+	public Torrent addTorrent(File file) throws Exception {
+		final Torrent torrent = new Torrent();
+		final com.turn.ttorrent.common.Torrent ttorrent = com.turn.ttorrent.common.Torrent.load(file);
+		torrent.setUrl(file.toURI().toURL());
+		torrent.setTitle(ttorrent.getName());
+		torrent.setHash(ttorrent.getHexInfoHash());
+		queue.add(torrent);
+		torrent.setState(TorrentState.QUEUED);
+		return torrent;
 	}
 
 	@Override

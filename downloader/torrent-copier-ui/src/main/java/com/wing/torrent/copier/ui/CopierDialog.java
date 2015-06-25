@@ -40,15 +40,15 @@ public class CopierDialog extends JDialog {
 	private static final long serialVersionUID = 6735931867561967734L;
 
 	private final JPanel contentPanel = new JPanel();
-	private final FileSystemView fileSystemView;
-	private DefaultTreeModel treeModel;
-	private JTree tree;
 
 	private final ManagerService managerService;
 
-	private CheckTreeManager checkTreeManager;
 	private final TorrentCopier copier = new TorrentCopier();
 
+	private final FileSystemView fileSystemView;
+	private DefaultTreeModel treeModel;
+	private JTree tree;
+	private CheckTreeManager checkTreeManager;
 	private JProgressBar progressBar;
 	private JButton moveButton;
 	private JButton copyButton;

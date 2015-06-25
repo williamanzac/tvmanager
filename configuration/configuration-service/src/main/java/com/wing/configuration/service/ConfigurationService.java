@@ -13,6 +13,9 @@ import com.wing.database.model.Configuration;
 
 public class ConfigurationService {
 
+	public static final String DEFAULT_USERNAME = "admin";
+	public static final String DEFAULT_PASSWORD = "admin";
+
 	private static final String TORRENT_DESTINATION = "torrent.destination";
 	private static final String TORRENT_USERNAME = "torrent.username";
 	private static final String TORRENT_PASSWORD = "torrent.password";
@@ -32,16 +35,19 @@ public class ConfigurationService {
 					configuration.torrentDestination = new File(value);
 				}
 
-				value = properties.getProperty(TORRENT_USERNAME);
+				value = properties.getProperty(TORRENT_USERNAME, DEFAULT_USERNAME);
 				configuration.torrentUsername = value;
 
-				value = properties.getProperty(TORRENT_PASSWORD);
+				value = properties.getProperty(TORRENT_PASSWORD, DEFAULT_PASSWORD);
 				configuration.torrentPassword = value;
 
 				value = properties.getProperty(SHOW_DESTINATION);
 				if (value != null) {
 					configuration.showDestination = new File(value);
 				}
+			} else {
+				configuration.torrentPassword = DEFAULT_PASSWORD;
+				configuration.torrentUsername = DEFAULT_USERNAME;
 			}
 		}
 		return configuration;

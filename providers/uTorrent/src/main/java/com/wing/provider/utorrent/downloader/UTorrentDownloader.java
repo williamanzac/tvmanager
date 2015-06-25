@@ -149,13 +149,7 @@ public class UTorrentDownloader extends TorrentDownloader {
 			final String name = tor.getString(2);
 			final int size = tor.getInt(3); // bytes
 			final int percent = tor.getInt(4);
-			// final int downloaded = tor.getInt(5);// bytes
-			// final int uploaded = tor.getInt(6);// bytes
-			// final int ratio = tor.getInt(7);
-			// final int uploadSpeed = tor.getInt(8);
-			// final int downSpeed = tor.getInt(9);
-			// final int eta = tor.getInt(10);
-			// final String label = tor.getString(11);
+
 			final boolean finished = percent == 1000l;
 
 			final Torrent torrent = new Torrent();
@@ -173,13 +167,13 @@ public class UTorrentDownloader extends TorrentDownloader {
 	private TorrentState convertState(final int status, final boolean finished) {
 		// Convert bitwise int to uTorrent status codes
 		// Now based on http://forum.utorrent.com/viewtopic.php?id=50779
-		if ((status & 1) == 1) {
+		if (finished) {
+			return TorrentState.DONE;
+		} else if ((status & 1) == 1) {
 			// Started
 			if ((status & 32) == 32) {
 				// Paused
 				return TorrentState.PAUSED;
-			} else if (finished) {
-				return TorrentState.DONE;
 			} else {
 				return TorrentState.DOWNLOADING;
 			}
@@ -198,9 +192,9 @@ public class UTorrentDownloader extends TorrentDownloader {
 	}
 
 	@Override
-	public void addTorrent(File torrent) throws Exception {
+	public Torrent addTorrent(File file) throws Exception {
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
 	@Override

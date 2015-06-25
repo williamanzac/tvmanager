@@ -24,7 +24,7 @@ public class TorrentTableModel extends AbstractTableModel {
 				try {
 					list = managerService.listTorrents();
 					fireTableDataChanged();
-					Thread.sleep(10000);
+					Thread.sleep(1000);
 				} catch (final Exception e) {
 					e.printStackTrace();
 				}

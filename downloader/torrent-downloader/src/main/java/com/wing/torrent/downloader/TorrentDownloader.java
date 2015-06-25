@@ -17,7 +17,7 @@ public abstract class TorrentDownloader {
 
 	public abstract void stop() throws InterruptedException;
 
-	public abstract void addTorrent(File torrent) throws Exception;
+	public abstract Torrent addTorrent(File torrent) throws Exception;
 
 	public abstract void startTorrent(Torrent torrent) throws Exception;
 
