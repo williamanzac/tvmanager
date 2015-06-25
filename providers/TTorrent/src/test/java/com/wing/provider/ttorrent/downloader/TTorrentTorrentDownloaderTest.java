@@ -13,7 +13,7 @@ public class TTorrentTorrentDownloaderTest {
 		final GetMethod method = new GetMethod(
 				"http://torrentproject.se/torrent/D809D0F134A455262930FB65D8B5858FF7893C3A.torrent");
 		client.executeMethod(method);
-		for (Header header : method.getResponseHeaders()) {
+		for (final Header header : method.getResponseHeaders()) {
 			System.out.println(header);
 		}
 		System.out.println(method.getResponseBodyAsString());

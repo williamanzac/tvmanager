@@ -1,5 +1,8 @@
 package com.wing.torrent.downloader;
 
+import java.io.File;
+
+import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
 
 public abstract class TorrentDownloader {
@@ -13,4 +16,14 @@ public abstract class TorrentDownloader {
 	public abstract void start();
 
 	public abstract void stop() throws InterruptedException;
+
+	public abstract void addTorrent(File torrent) throws Exception;
+
+	public abstract void startTorrent(Torrent torrent) throws Exception;
+
+	public abstract void pauseTorrent(Torrent torrent) throws Exception;
+
+	public abstract void stopTorrent(Torrent torrent) throws Exception;
+
+	public abstract void removeTorrent(Torrent torrent) throws Exception;
 }

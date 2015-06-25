@@ -137,16 +137,48 @@ public class TTorrentTorrentDownloader extends TorrentDownloader {
 		return method.getResponseBodyAsStream();
 	}
 
+	@Override
 	public void start() {
 		running = true;
 		monitorThread.start();
 	}
 
+	@Override
 	public void stop() throws InterruptedException {
 		running = false;
 		for (final Client client : downloadQueue.keySet()) {
 			client.stop();
 		}
 		monitorThread.join();
+	}
+
+	@Override
+	public void addTorrent(File torrent) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void startTorrent(Torrent torrent) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void pauseTorrent(Torrent torrent) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void stopTorrent(Torrent torrent) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void removeTorrent(Torrent torrent) {
+		// TODO Auto-generated method stub
+
 	}
 }

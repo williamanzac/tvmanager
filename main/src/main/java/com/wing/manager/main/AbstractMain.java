@@ -15,7 +15,7 @@ public class AbstractMain {
 	static final TorrentPersistenceManager torrentPersistenceManager = new TorrentPersistenceManager();
 	static final TorrentSearchService torrentSearchService = new TorrentProjectTorrentSearchService();
 	static final ConfigurationService configurationService = new ConfigurationService();
-	protected static final DefaultManagerService managerService = new DefaultManagerService(searchService, persistenceManager,
-				torrentPersistenceManager, torrentSearchService, configurationService);
+	protected static final DefaultManagerService managerService = new DefaultManagerService(searchService,
+			persistenceManager, torrentPersistenceManager, torrentSearchService, configurationService);
 
 }

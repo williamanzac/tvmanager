@@ -1,5 +1,6 @@
 package com.wing.provider.utorrent.downloader;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -37,9 +38,9 @@ public class UTorrentDownloader extends TorrentDownloader {
 
 	public UTorrentDownloader(final ManagerService managerService) throws Exception {
 		super(managerService);
-		HttpState state = client.getState();
-		Configuration configuration = managerService.loadConfiguration();
-		Credentials credentials = new UsernamePasswordCredentials(configuration.torrentUsername,
+		final HttpState state = client.getState();
+		final Configuration configuration = managerService.loadConfiguration();
+		final Credentials credentials = new UsernamePasswordCredentials(configuration.torrentUsername,
 				configuration.torrentPassword);
 		state.setCredentials(null, null, credentials);
 		monitorThread = new Thread(() -> {
@@ -80,11 +81,13 @@ public class UTorrentDownloader extends TorrentDownloader {
 	}	);
 	}
 
+	@Override
 	public void start() {
 		running = true;
 		monitorThread.start();
 	}
 
+	@Override
 	public void stop() throws InterruptedException {
 		running = false;
 		monitorThread.join();
@@ -153,11 +156,11 @@ public class UTorrentDownloader extends TorrentDownloader {
 			// final int downSpeed = tor.getInt(9);
 			// final int eta = tor.getInt(10);
 			// final String label = tor.getString(11);
-			final boolean finished = (percent == 1000l);
+			final boolean finished = percent == 1000l;
 
 			final Torrent torrent = new Torrent();
 			torrent.setHash(hash);
-			torrent.setPercentComplete((((float) percent) / 1000f) * 100);
+			torrent.setPercentComplete(percent / 1000f * 100);
 			torrent.setSize(size);
 			torrent.setTitle(name);
 			torrent.setState(convertState(status, finished));
@@ -192,5 +195,31 @@ public class UTorrentDownloader extends TorrentDownloader {
 		} else {
 			return TorrentState.WAITING;
 		}
+	}
+
+	@Override
+	public void addTorrent(File torrent) throws Exception {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void startTorrent(Torrent torrent) throws Exception {
+		getuTorrentResponse("&action=start&hash=" + torrent.getHash());
+	}
+
+	@Override
+	public void pauseTorrent(Torrent torrent) throws Exception {
+		getuTorrentResponse("&action=pause&hash=" + torrent.getHash());
+	}
+
+	@Override
+	public void stopTorrent(Torrent torrent) throws Exception {
+		getuTorrentResponse("&action=stop&hash=" + torrent.getHash());
+	}
+
+	@Override
+	public void removeTorrent(Torrent torrent) throws Exception {
+		getuTorrentResponse("&action=remove&hash=" + torrent.getHash());
 	}
 }

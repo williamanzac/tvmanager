@@ -21,14 +21,9 @@ public class TristateCheckBox extends JCheckBox {
 	private static final long serialVersionUID = 3023815086085033163L;
 
 	/** This is a type-safe enumerated type */
-	public static class State {
-		private State() {
-		}
+	public static enum State {
+		NOT_SELECTED, SELECTED, DONT_CARE;
 	}
-
-	public static final State NOT_SELECTED = new State();
-	public static final State SELECTED = new State();
-	public static final State DONT_CARE = new State();
 
 	private final TristateDecorator model;
 
@@ -66,7 +61,7 @@ public class TristateCheckBox extends JCheckBox {
 	}
 
 	public TristateCheckBox(final String text) {
-		this(text, DONT_CARE);
+		this(text, State.DONT_CARE);
 	}
 
 	public TristateCheckBox() {
@@ -95,9 +90,9 @@ public class TristateCheckBox extends JCheckBox {
 	@Override
 	public void setSelected(final boolean b) {
 		if (b) {
-			setState(SELECTED);
+			setState(State.SELECTED);
 		} else {
-			setState(NOT_SELECTED);
+			setState(State.NOT_SELECTED);
 		}
 	}
 
@@ -114,11 +109,11 @@ public class TristateCheckBox extends JCheckBox {
 		}
 
 		private void setState(final State state) {
-			if (state == NOT_SELECTED) {
+			if (state == State.NOT_SELECTED) {
 				other.setArmed(false);
 				setPressed(false);
 				setSelected(false);
-			} else if (state == SELECTED) {
+			} else if (state == State.SELECTED) {
 				other.setArmed(false);
 				setPressed(false);
 				setSelected(true);
@@ -138,25 +133,25 @@ public class TristateCheckBox extends JCheckBox {
 		private State getState() {
 			if (isSelected() && !isArmed()) {
 				// normal black tick
-				return SELECTED;
+				return State.SELECTED;
 			} else if (isSelected() && isArmed()) {
 				// don't care grey tick
-				return DONT_CARE;
+				return State.DONT_CARE;
 			} else {
 				// normal deselected
-				return NOT_SELECTED;
+				return State.NOT_SELECTED;
 			}
 		}
 
 		/** We rotate between NOT_SELECTED, SELECTED and DONT_CARE. */
 		private void nextState() {
 			final State current = getState();
-			if (current == NOT_SELECTED) {
-				setState(SELECTED);
-			} else if (current == SELECTED) {
-				setState(DONT_CARE);
-			} else if (current == DONT_CARE) {
-				setState(NOT_SELECTED);
+			if (current == State.NOT_SELECTED) {
+				setState(State.SELECTED);
+			} else if (current == State.SELECTED) {
+				setState(State.DONT_CARE);
+			} else if (current == State.DONT_CARE) {
+				setState(State.NOT_SELECTED);
 			}
 		}
 

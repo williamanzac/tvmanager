@@ -8,6 +8,8 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -15,7 +17,10 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -26,7 +31,10 @@ import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.TorrentCopier;
 import com.wing.torrent.copier.ui.components.CheckTreeManager;
+import com.wing.torrent.copier.ui.components.CopyTask;
 import com.wing.torrent.copier.ui.components.FileTreeCellRenderer;
+
+import javax.swing.JProgressBar;
 
 public class CopierDialog extends JDialog {
 	private static final long serialVersionUID = 6735931867561967734L;
@@ -41,6 +49,11 @@ public class CopierDialog extends JDialog {
 	private CheckTreeManager checkTreeManager;
 	private final TorrentCopier copier = new TorrentCopier();
 
+	private JProgressBar progressBar;
+	private JButton moveButton;
+	private JButton copyButton;
+	private JButton delButton;
+
 	private class ButtonActions implements ActionListener {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
@@ -48,6 +61,10 @@ public class CopierDialog extends JDialog {
 			switch (command) {
 			case "move":
 				EventQueue.invokeLater(() -> {
+					moveButton.setEnabled(false);
+					copyButton.setEnabled(false);
+					delButton.setEnabled(false);
+					tree.setEnabled(false);
 					try {
 						final Configuration configuration = managerService.loadConfiguration();
 						final File targetDir = configuration.showDestination;
@@ -63,29 +80,55 @@ public class CopierDialog extends JDialog {
 					} catch (final Exception e) {
 						e.printStackTrace();
 					}
+					moveButton.setEnabled(true);
+					copyButton.setEnabled(true);
+					delButton.setEnabled(true);
+					tree.setEnabled(true);
 				});
 				break;
 			case "copy":
-				EventQueue.invokeLater(() -> {
-					try {
-						final Configuration configuration = managerService.loadConfiguration();
-						final File targetDir = configuration.showDestination;
-						final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
-						for (final TreePath path : checkedPaths) {
-							final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path
-									.getLastPathComponent();
-							final File source = (File) sourceNode.getUserObject();
-							final File dest = new File(targetDir, source.getName());
-							System.out.println("copying: " + source + " to " + dest);
-							copier.copyFileTo(source, dest);
-						}
-					} catch (final Exception e) {
-						e.printStackTrace();
+				try {
+					moveButton.setEnabled(false);
+					copyButton.setEnabled(false);
+					delButton.setEnabled(false);
+					tree.setEnabled(false);
+
+					final Configuration configuration = managerService.loadConfiguration();
+					final File targetDir = configuration.showDestination;
+					final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
+					for (final TreePath path : checkedPaths) {
+						final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+						final File source = (File) sourceNode.getUserObject();
+						final File dest = new File(targetDir, source.getName());
+						System.out.println("copying: " + source + " to " + dest);
+						final CopyTask task = new CopyTask(source, dest);
+						task.addPropertyChangeListener(new PropertyChangeListener() {
+							@Override
+							public void propertyChange(PropertyChangeEvent evt) {
+								if ("progress".equals(evt.getPropertyName())) {
+									int progress = (Integer) evt.getNewValue();
+									progressBar.setValue(progress);
+									if (progress >= 100) {
+										moveButton.setEnabled(true);
+										copyButton.setEnabled(true);
+										delButton.setEnabled(true);
+										tree.setEnabled(true);
+									}
+								}
+							}
+						});
+						task.execute();
 					}
-				});
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
 				break;
 			case "delete":
 				EventQueue.invokeLater(() -> {
+					moveButton.setEnabled(false);
+					copyButton.setEnabled(false);
+					delButton.setEnabled(false);
+					tree.setEnabled(false);
 					try {
 						final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
 						for (final TreePath path : checkedPaths) {
@@ -98,10 +141,14 @@ public class CopierDialog extends JDialog {
 					} catch (final Exception e) {
 						e.printStackTrace();
 					}
+					moveButton.setEnabled(true);
+					copyButton.setEnabled(true);
+					delButton.setEnabled(true);
+					tree.setEnabled(true);
 				});
 				break;
 			case "OK":
-				CopierDialog.this.setVisible(false);
+				setVisible(false);
 				break;
 			}
 		}
@@ -114,7 +161,7 @@ public class CopierDialog extends JDialog {
 		try {
 			setLookAndFeel(getSystemLookAndFeelClassName());
 			final CopierDialog dialog = new CopierDialog(null);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -148,6 +195,15 @@ public class CopierDialog extends JDialog {
 				tree.setCellRenderer(new FileTreeCellRenderer());
 				tree.expandRow(0);
 				checkTreeManager = new CheckTreeManager(tree);
+				checkTreeManager.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
+					@Override
+					public void valueChanged(TreeSelectionEvent e) {
+						final boolean enabled = checkTreeManager.getSelectionModel().getSelectionCount() > 0;
+						moveButton.setEnabled(enabled);
+						copyButton.setEnabled(enabled);
+						delButton.setEnabled(enabled);
+					}
+				});
 				scrollPane.setViewportView(tree);
 			}
 		}
@@ -156,21 +212,29 @@ public class CopierDialog extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				final JButton moveButton = new JButton("Move");
+				progressBar = new JProgressBar();
+				progressBar.setStringPainted(true);
+				buttonPane.add(progressBar);
+			}
+			{
+				moveButton = new JButton("Move");
 				moveButton.setActionCommand("move");
 				moveButton.addActionListener(buttonActions);
+				moveButton.setEnabled(false);
 				buttonPane.add(moveButton);
 			}
 			{
-				final JButton copyButton = new JButton("Copy");
+				copyButton = new JButton("Copy");
 				copyButton.setActionCommand("copy");
 				copyButton.addActionListener(buttonActions);
+				copyButton.setEnabled(false);
 				buttonPane.add(copyButton);
 			}
 			{
-				final JButton delButton = new JButton("Delete");
+				delButton = new JButton("Delete");
 				delButton.setActionCommand("delete");
 				delButton.addActionListener(buttonActions);
+				delButton.setEnabled(false);
 				buttonPane.add(delButton);
 			}
 			{

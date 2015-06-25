@@ -30,11 +30,11 @@ public class UTorrentDownloaderTest {
 
 	@Test
 	public void verifyParsingTorrentList() throws Exception {
-		String source = IOUtils.toString(getClass().getResourceAsStream("/list.json"));
-		JSONObject object = new JSONObject(source);
-		List<Torrent> list = cut.parseTorrentList(object);
+		final String source = IOUtils.toString(getClass().getResourceAsStream("/list.json"));
+		final JSONObject object = new JSONObject(source);
+		final List<Torrent> list = cut.parseTorrentList(object);
 		Assert.assertNotNull(list);
-		Torrent torrent = list.get(0);
+		final Torrent torrent = list.get(0);
 		Assert.assertNotNull(torrent);
 		Assert.assertEquals("7885CCA0B81F7BAEA3A02A4DC13E2A870AED4FBF", torrent.getHash());
 	}
@@ -42,8 +42,8 @@ public class UTorrentDownloaderTest {
 	@Test
 	public void verifyParsingToken() throws Exception {
 		final SAXReader htmlReader = new SAXReader(new Parser());
-		Document document = htmlReader.read(getClass().getResourceAsStream("/token.html"));
-		String token = cut.parseToken(document);
+		final Document document = htmlReader.read(getClass().getResourceAsStream("/token.html"));
+		final String token = cut.parseToken(document);
 		Assert.assertEquals("CgQLB9D4Jh1XXBkeNdyqgi68J__gvSvrKUIPemgB_-LBh7MZSD_wMT8uh1UAAAAA", token);
 	}
 }
