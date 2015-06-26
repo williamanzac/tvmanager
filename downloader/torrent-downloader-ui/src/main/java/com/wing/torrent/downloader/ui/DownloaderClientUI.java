@@ -38,9 +38,11 @@ import org.apache.commons.io.FileUtils;
 import com.wing.configuration.ui.ConfigurationDialog;
 import com.wing.database.model.Configuration;
 import com.wing.database.model.Torrent;
+import com.wing.database.model.TorrentState;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.ui.components.CheckTreeManager;
 import com.wing.torrent.copier.ui.components.CopyTask;
+import com.wing.torrent.copier.ui.components.FileTask;
 import com.wing.torrent.copier.ui.components.FileTreeCellRenderer;
 import com.wing.torrent.copier.ui.components.MoveTask;
 import com.wing.torrent.downloader.TorrentDownloader;
@@ -66,9 +68,14 @@ public class DownloaderClientUI extends JFrame {
 	private JTree tree;
 	private CheckTreeManager checkTreeManager;
 	private JProgressBar progressBar;
-	private JButton moveButton;
-	private JButton copyButton;
-	private JButton delButton;
+	private JButton moveFileButton;
+	private JButton copyFileButton;
+	private JButton delFileButton;
+
+	private JButton startTorrentButton;
+	private JButton pauseTorrentButton;
+	private JButton stopTorrentButton;
+	private JButton delTorrentButton;
 
 	private final class TorrentSelectionListener implements ListSelectionListener {
 		@Override
@@ -80,33 +87,65 @@ public class DownloaderClientUI extends JFrame {
 				try {
 					Configuration configuration = managerService.loadConfiguration();
 					final File dest = configuration.torrentDestination;
-					final Torrent torrent = managerService.listTorrents().get(torrentTable.getSelectedRow());
+					int selectedRow = torrentTable.getSelectedRow();
+
+					startTorrentButton.setEnabled(false);
+					pauseTorrentButton.setEnabled(false);
+					stopTorrentButton.setEnabled(false);
+					delTorrentButton.setEnabled(false);
+
+					if (selectedRow < 0) {
+						return;
+					}
+					final Torrent torrent = managerService.listTorrents().get(selectedRow);
 					if (torrent != null) {
 						final String title = torrent.getTitle();
 						final File source = new File(dest, title);
 						System.out.println(source);
 						final DefaultMutableTreeNode root = new DefaultMutableTreeNode(source);
-						final File[] files = fileSystemView.getFiles(source, true); // !!
-					System.out.println(files);
-					for (final File child : files) {
-						System.out.println(child);
-						root.add(new DefaultMutableTreeNode(child));
+						final File[] files = fileSystemView.getFiles(source, true);
+						System.out.println(files);
+						for (final File child : files) {
+							System.out.println(child);
+							root.add(new DefaultMutableTreeNode(child));
+						}
+						treeModel.setRoot(root);
+						tree.setRootVisible(true);
+
+						startTorrentButton.setEnabled(torrent.getState() == TorrentState.QUEUED
+								|| torrent.getState() == TorrentState.PAUSED);
+						pauseTorrentButton.setEnabled(torrent.getState() == TorrentState.DOWNLOADING);
+						stopTorrentButton.setEnabled(torrent.getState() == TorrentState.DOWNLOADING);
+						delTorrentButton.setEnabled(true);
+					} else {
+						final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+						treeModel.setRoot(root);
+						tree.setRootVisible(false);
 					}
-					treeModel.setRoot(root);
-					tree.setRootVisible(true);
-				} else {
-					final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-					treeModel.setRoot(root);
-					tree.setRootVisible(false);
+				} catch (final Exception e1) {
+					e1.printStackTrace();
 				}
-			} catch (final Exception e1) {
-				e1.printStackTrace();
-			}
-		})	;
+			});
 		}
 	}
 
 	private class ButtonActions implements ActionListener {
+		private final class FileTaskListener implements PropertyChangeListener {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ("progress".equals(evt.getPropertyName())) {
+					int progress = (Integer) evt.getNewValue();
+					progressBar.setValue(progress);
+					if (progress >= 100) {
+						moveFileButton.setEnabled(true);
+						copyFileButton.setEnabled(true);
+						delFileButton.setEnabled(true);
+						tree.setEnabled(true);
+					}
+				}
+			}
+		}
+
 		@Override
 		public void actionPerformed(final ActionEvent e) {
 			final String command = e.getActionCommand();
@@ -138,11 +177,12 @@ public class DownloaderClientUI extends JFrame {
 					}
 				});
 				break;
+			case "copyFile":
 			case "moveFile":
 				try {
-					moveButton.setEnabled(false);
-					copyButton.setEnabled(false);
-					delButton.setEnabled(false);
+					moveFileButton.setEnabled(false);
+					copyFileButton.setEnabled(false);
+					delFileButton.setEnabled(false);
 					tree.setEnabled(false);
 
 					final Configuration configuration = managerService.loadConfiguration();
@@ -152,60 +192,15 @@ public class DownloaderClientUI extends JFrame {
 						final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path.getLastPathComponent();
 						final File source = (File) sourceNode.getUserObject();
 						final File dest = new File(targetDir, source.getName());
-						System.out.println("moving: " + source + " to " + dest);
-						final MoveTask task = new MoveTask(source, dest);
-						task.addPropertyChangeListener(new PropertyChangeListener() {
-							@Override
-							public void propertyChange(PropertyChangeEvent evt) {
-								if ("progress".equals(evt.getPropertyName())) {
-									int progress = (Integer) evt.getNewValue();
-									progressBar.setValue(progress);
-									if (progress >= 100) {
-										moveButton.setEnabled(true);
-										copyButton.setEnabled(true);
-										delButton.setEnabled(true);
-										tree.setEnabled(true);
-									}
-								}
-							}
-						});
-						task.execute();
-					}
-				} catch (final Exception e1) {
-					e1.printStackTrace();
-				}
-				break;
-			case "copyFile":
-				try {
-					moveButton.setEnabled(false);
-					copyButton.setEnabled(false);
-					delButton.setEnabled(false);
-					tree.setEnabled(false);
-
-					final Configuration configuration = managerService.loadConfiguration();
-					final File targetDir = configuration.showDestination;
-					final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
-					for (final TreePath path : checkedPaths) {
-						final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-						final File source = (File) sourceNode.getUserObject();
-						final File dest = new File(targetDir, source.getName());
-						System.out.println("copying: " + source + " to " + dest);
-						final CopyTask task = new CopyTask(source, dest);
-						task.addPropertyChangeListener(new PropertyChangeListener() {
-							@Override
-							public void propertyChange(PropertyChangeEvent evt) {
-								if ("progress".equals(evt.getPropertyName())) {
-									int progress = (Integer) evt.getNewValue();
-									progressBar.setValue(progress);
-									if (progress >= 100) {
-										moveButton.setEnabled(true);
-										copyButton.setEnabled(true);
-										delButton.setEnabled(true);
-										tree.setEnabled(true);
-									}
-								}
-							}
-						});
+						final FileTask task;
+						if ("moveFile".equals(command)) {
+							System.out.println("moving: " + source + " to " + dest);
+							task = new MoveTask(source, dest);
+						} else {
+							System.out.println("copying: " + source + " to " + dest);
+							task = new CopyTask(source, dest);
+						}
+						task.addPropertyChangeListener(new FileTaskListener());
 						task.execute();
 					}
 				} catch (final Exception e1) {
@@ -214,9 +209,9 @@ public class DownloaderClientUI extends JFrame {
 				break;
 			case "deleteFile":
 				EventQueue.invokeLater(() -> {
-					moveButton.setEnabled(false);
-					copyButton.setEnabled(false);
-					delButton.setEnabled(false);
+					moveFileButton.setEnabled(false);
+					copyFileButton.setEnabled(false);
+					delFileButton.setEnabled(false);
 					tree.setEnabled(false);
 					try {
 						final TreePath checkedPaths[] = checkTreeManager.getSelectionModel().getSelectionPaths();
@@ -230,9 +225,9 @@ public class DownloaderClientUI extends JFrame {
 					} catch (final Exception e1) {
 						e1.printStackTrace();
 					}
-					moveButton.setEnabled(true);
-					copyButton.setEnabled(true);
-					delButton.setEnabled(true);
+					moveFileButton.setEnabled(true);
+					copyFileButton.setEnabled(true);
+					delFileButton.setEnabled(true);
 					tree.setEnabled(true);
 				});
 				break;
@@ -263,7 +258,7 @@ public class DownloaderClientUI extends JFrame {
 		setTitle("Torrent Download Client");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowActions());
-		setBounds(100, 100, 450, 300);
+		setSize(800, 700);
 		contentPane = new JPanel();
 		contentPane.setLayout(new BorderLayout());
 		setContentPane(contentPane);
@@ -287,7 +282,9 @@ public class DownloaderClientUI extends JFrame {
 		final JScrollPane tableScrollPane = new JScrollPane(torrentTable);
 
 		final JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true, tableScrollPane, infoPane);
-		splitPane.setDividerLocation(0.6d);
+		EventQueue.invokeLater(() -> {
+			splitPane.setDividerLocation(0.6d);
+		});
 		contentPane.add(splitPane, BorderLayout.CENTER);
 
 		final JToolBar toolBar = initTootbar();
@@ -309,29 +306,33 @@ public class DownloaderClientUI extends JFrame {
 
 		toolBar.addSeparator();
 
-		final JButton startButton = new JButton("Start");
-		startButton.setToolTipText("Start downloading the torrent");
-		startButton.setActionCommand("startTorrent");
-		startButton.addActionListener(buttonActions);
-		toolBar.add(startButton);
+		startTorrentButton = new JButton("Start");
+		startTorrentButton.setToolTipText("Start downloading the torrent");
+		startTorrentButton.setActionCommand("startTorrent");
+		startTorrentButton.addActionListener(buttonActions);
+		startTorrentButton.setEnabled(false);
+		toolBar.add(startTorrentButton);
 
-		final JButton pauseButton = new JButton("Pause");
-		pauseButton.setToolTipText("Pause the torrent");
-		pauseButton.setActionCommand("pauseTorrent");
-		pauseButton.addActionListener(buttonActions);
-		toolBar.add(pauseButton);
+		pauseTorrentButton = new JButton("Pause");
+		pauseTorrentButton.setToolTipText("Pause the torrent");
+		pauseTorrentButton.setActionCommand("pauseTorrent");
+		pauseTorrentButton.addActionListener(buttonActions);
+		pauseTorrentButton.setEnabled(false);
+		toolBar.add(pauseTorrentButton);
 
-		final JButton stopButton = new JButton("Stop");
-		stopButton.setToolTipText("Stop downloading the torrent");
-		stopButton.setActionCommand("stopTorrent");
-		stopButton.addActionListener(buttonActions);
-		toolBar.add(stopButton);
+		stopTorrentButton = new JButton("Stop");
+		stopTorrentButton.setToolTipText("Stop downloading the torrent");
+		stopTorrentButton.setActionCommand("stopTorrent");
+		stopTorrentButton.addActionListener(buttonActions);
+		stopTorrentButton.setEnabled(false);
+		toolBar.add(stopTorrentButton);
 
-		final JButton delButton = new JButton("Remove");
-		delButton.setToolTipText("Remove the torrent");
-		delButton.setActionCommand("delTorrent");
-		delButton.addActionListener(buttonActions);
-		toolBar.add(delButton);
+		delTorrentButton = new JButton("Remove");
+		delTorrentButton.setToolTipText("Remove the torrent");
+		delTorrentButton.setActionCommand("delTorrent");
+		delTorrentButton.addActionListener(buttonActions);
+		delTorrentButton.setEnabled(false);
+		toolBar.add(delTorrentButton);
 
 		toolBar.addSeparator();
 
@@ -360,9 +361,9 @@ public class DownloaderClientUI extends JFrame {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				final boolean enabled = checkTreeManager.getSelectionModel().getSelectionCount() > 0;
-				moveButton.setEnabled(enabled);
-				copyButton.setEnabled(enabled);
-				delButton.setEnabled(enabled);
+				moveFileButton.setEnabled(enabled);
+				copyFileButton.setEnabled(enabled);
+				delFileButton.setEnabled(enabled);
 			}
 		});
 		scrollPane.setViewportView(tree);
@@ -375,22 +376,22 @@ public class DownloaderClientUI extends JFrame {
 		progressBar.setStringPainted(true);
 		buttonPane.add(progressBar);
 
-		moveButton = new JButton("Move");
-		moveButton.setActionCommand("moveFile");
-		moveButton.addActionListener(buttonActions);
-		moveButton.setEnabled(false);
-		buttonPane.add(moveButton);
+		moveFileButton = new JButton("Move");
+		moveFileButton.setActionCommand("moveFile");
+		moveFileButton.addActionListener(buttonActions);
+		moveFileButton.setEnabled(false);
+		buttonPane.add(moveFileButton);
 
-		copyButton = new JButton("Copy");
-		copyButton.setActionCommand("copyFile");
-		copyButton.addActionListener(buttonActions);
-		copyButton.setEnabled(false);
-		buttonPane.add(copyButton);
+		copyFileButton = new JButton("Copy");
+		copyFileButton.setActionCommand("copyFile");
+		copyFileButton.addActionListener(buttonActions);
+		copyFileButton.setEnabled(false);
+		buttonPane.add(copyFileButton);
 
-		delButton = new JButton("Delete");
-		delButton.setActionCommand("deleteFile");
-		delButton.addActionListener(buttonActions);
-		delButton.setEnabled(false);
-		buttonPane.add(delButton);
+		delFileButton = new JButton("Delete");
+		delFileButton.setActionCommand("deleteFile");
+		delFileButton.addActionListener(buttonActions);
+		delFileButton.setEnabled(false);
+		buttonPane.add(delFileButton);
 	}
 }

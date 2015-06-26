@@ -32,6 +32,7 @@ import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.TorrentCopier;
 import com.wing.torrent.copier.ui.components.CheckTreeManager;
 import com.wing.torrent.copier.ui.components.CopyTask;
+import com.wing.torrent.copier.ui.components.FileTask;
 import com.wing.torrent.copier.ui.components.FileTreeCellRenderer;
 
 import javax.swing.JProgressBar;
@@ -55,6 +56,22 @@ public class CopierDialog extends JDialog {
 	private JButton delButton;
 
 	private class ButtonActions implements ActionListener {
+		private final class FileTaskListener implements PropertyChangeListener {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if ("progress".equals(evt.getPropertyName())) {
+					int progress = (Integer) evt.getNewValue();
+					progressBar.setValue(progress);
+					if (progress >= 100) {
+						moveButton.setEnabled(true);
+						copyButton.setEnabled(true);
+						delButton.setEnabled(true);
+						tree.setEnabled(true);
+					}
+				}
+			}
+		}
+
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final String command = event.getActionCommand();
@@ -101,22 +118,8 @@ public class CopierDialog extends JDialog {
 						final File source = (File) sourceNode.getUserObject();
 						final File dest = new File(targetDir, source.getName());
 						System.out.println("copying: " + source + " to " + dest);
-						final CopyTask task = new CopyTask(source, dest);
-						task.addPropertyChangeListener(new PropertyChangeListener() {
-							@Override
-							public void propertyChange(PropertyChangeEvent evt) {
-								if ("progress".equals(evt.getPropertyName())) {
-									int progress = (Integer) evt.getNewValue();
-									progressBar.setValue(progress);
-									if (progress >= 100) {
-										moveButton.setEnabled(true);
-										copyButton.setEnabled(true);
-										delButton.setEnabled(true);
-										tree.setEnabled(true);
-									}
-								}
-							}
-						});
+						final FileTask task = new CopyTask(source, dest);
+						task.addPropertyChangeListener(new FileTaskListener());
 						task.execute();
 					}
 				} catch (final Exception e) {

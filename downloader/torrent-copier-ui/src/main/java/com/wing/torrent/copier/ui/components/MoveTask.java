@@ -7,20 +7,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.swing.SwingWorker;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-public class MoveTask extends SwingWorker<Void, Integer> {
-	private final File source;
-	private final File target;
-	private long totalBytes = 0L;
-	private long copiedBytes = 0L;
-
+public class MoveTask extends FileTask {
 	public MoveTask(final File source, final File target) {
-		this.source = source;
-		this.target = target;
+		super(source, target);
 	}
 
 	@Override
@@ -29,10 +21,6 @@ public class MoveTask extends SwingWorker<Void, Integer> {
 
 		moveFiles(source, target);
 		return null;
-	}
-
-	private void retrieveTotalBytes(final File sourceFile) {
-		totalBytes = sourceFile.length();
 	}
 
 	private void moveFiles(final File sourceFile, final File targetFile) throws IOException {
