@@ -9,9 +9,12 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.ListSelectionModel;
 
 import com.wing.database.model.Torrent;
@@ -25,6 +28,7 @@ public class SearchDialog extends JDialog {
 	private JTable table;
 	private final ManagerService managerService;
 	private TorrentTableModel tableModel;
+	private JTextField textField;
 
 	private Torrent selectedTorrent;
 
@@ -32,12 +36,24 @@ public class SearchDialog extends JDialog {
 		@Override
 		public void actionPerformed(final ActionEvent event) {
 			final String command = event.getActionCommand();
-			if ("OK".equals(command)) {
+			switch (command) {
+			case "OK":
 				selectedTorrent = tableModel.getTorrents().get(table.getSelectedRow());
 				setVisible(false);
-			} else if ("Cancel".equals(command)) {
+				break;
+			case "Cancel":
 				selectedTorrent = null;
 				setVisible(false);
+				break;
+			case "Search":
+				EventQueue.invokeLater(() -> {
+					try {
+						final List<Torrent> list = managerService.searchFor(textField.getText());
+						tableModel.setTorrents(list);
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+				});
 			}
 		}
 	}
@@ -48,6 +64,7 @@ public class SearchDialog extends JDialog {
 	public SearchDialog(final ManagerService managerService) {
 		this.managerService = managerService;
 		setModal(true);
+		setTitle("Torrent Searcher");
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		final ButtonActions buttonActions = new ButtonActions();
@@ -78,6 +95,22 @@ public class SearchDialog extends JDialog {
 				cancelButton.addActionListener(buttonActions);
 				buttonPane.add(cancelButton);
 			}
+		}
+		{
+			final JToolBar toolBar = new JToolBar();
+			toolBar.setFloatable(false);
+			getContentPane().add(toolBar, BorderLayout.NORTH);
+			final JLabel lblNewLabel = new JLabel("Name:");
+			toolBar.add(lblNewLabel);
+			textField = new JTextField();
+			lblNewLabel.setLabelFor(textField);
+			toolBar.add(textField);
+			textField.setColumns(10);
+			final JButton btnNewButton = new JButton("Search");
+			btnNewButton.setActionCommand("Search");
+			btnNewButton.addActionListener(buttonActions);
+			toolBar.add(btnNewButton);
+
 		}
 	}
 

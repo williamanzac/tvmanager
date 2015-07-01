@@ -40,10 +40,7 @@ public class PriateBayTorrentSearchService implements TorrentSearchService {
 
 	@Override
 	public List<Torrent> searchTorrent(final String showName, final int season, final int episode) throws Exception {
-		final String url = MessageFormat.format(searchPattern, baseURL(), searchURL(showName, season, episode));
-		final InputStream response = getResponse(url);
-		final Document document = htmlReader.read(response);
-		return parseXML(document);
+		return searchTorrent(episodeQuery(showName, season, episode));
 	}
 
 	private List<Torrent> parseXML(final Document document) {
@@ -51,8 +48,17 @@ public class PriateBayTorrentSearchService implements TorrentSearchService {
 		return null;
 	}
 
-	private String searchURL(final String show, final int season, final int episode) throws Exception {
+	private String episodeQuery(final String show, final int season, final int episode) throws Exception {
 		final String formatString = String.format("%1$s s%2$02de%3$02d", show, season, episode);
-		return URLEncoder.encode(formatString, "UTF-8");
+		return formatString;
+	}
+
+	@Override
+	public List<Torrent> searchTorrent(String query) throws Exception {
+		query = URLEncoder.encode(query, "UTF-8");
+		final String url = MessageFormat.format(searchPattern, baseURL(), query);
+		final InputStream response = getResponse(url);
+		final Document document = htmlReader.read(response);
+		return parseXML(document);
 	}
 }

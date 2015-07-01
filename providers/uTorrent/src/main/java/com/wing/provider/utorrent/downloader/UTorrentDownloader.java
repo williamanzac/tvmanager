@@ -123,7 +123,7 @@ public class UTorrentDownloader extends TorrentDownloader {
 		return authtoken;
 	}
 
-	String parseToken(Document document) throws Exception {
+	String parseToken(final Document document) throws Exception {
 		System.out.println(document.asXML());
 		final Element node = (Element) document.selectSingleNode("//html:div");
 		final String string = node.getTextTrim();
@@ -135,8 +135,10 @@ public class UTorrentDownloader extends TorrentDownloader {
 		return parseTorrentList(object);
 	}
 
-	void addTorrent(Torrent torrent) throws Exception {
-		getuTorrentResponse("&action=add-url&s=" + URLEncoder.encode(torrent.getUrl().toString(), "UTF-8"));
+	void addTorrent(final Torrent torrent) throws Exception {
+		final String url = torrent.getUrl().toString();
+		final String encode = URLEncoder.encode(url, "UTF-8");
+		getuTorrentResponse("&action=add-url&s=" + encode);
 	}
 
 	List<Torrent> parseTorrentList(final JSONObject object) {
@@ -192,28 +194,28 @@ public class UTorrentDownloader extends TorrentDownloader {
 	}
 
 	@Override
-	public Torrent addTorrent(File file) throws Exception {
+	public Torrent addTorrent(final File file) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void startTorrent(Torrent torrent) throws Exception {
+	public void startTorrent(final Torrent torrent) throws Exception {
 		getuTorrentResponse("&action=start&hash=" + torrent.getHash());
 	}
 
 	@Override
-	public void pauseTorrent(Torrent torrent) throws Exception {
+	public void pauseTorrent(final Torrent torrent) throws Exception {
 		getuTorrentResponse("&action=pause&hash=" + torrent.getHash());
 	}
 
 	@Override
-	public void stopTorrent(Torrent torrent) throws Exception {
+	public void stopTorrent(final Torrent torrent) throws Exception {
 		getuTorrentResponse("&action=stop&hash=" + torrent.getHash());
 	}
 
 	@Override
-	public void removeTorrent(Torrent torrent) throws Exception {
+	public void removeTorrent(final Torrent torrent) throws Exception {
 		getuTorrentResponse("&action=remove&hash=" + torrent.getHash());
 	}
 }

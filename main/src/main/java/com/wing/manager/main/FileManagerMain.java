@@ -6,15 +6,14 @@ import static javax.swing.UIManager.setLookAndFeel;
 
 import javax.swing.JFrame;
 
-import com.wing.torrent.downloader.ui.DownloaderClientUI;
+import com.wing.torrent.copier.ui.FileManagerUI;
 
-public class DownloadClientMain extends AbstractMain {
+public class FileManagerMain extends AbstractMain {
 	public static void main(final String[] args) throws Exception {
 		setLookAndFeel(getSystemLookAndFeelClassName());
 		invokeLater(() -> {
 			try {
-				final DownloaderClientUI frame = new DownloaderClientUI(managerService, torrentDownloader,
-						torrentCopier);
+				final FileManagerUI frame = new FileManagerUI(torrentCopier);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);
 			} catch (final Exception e) {

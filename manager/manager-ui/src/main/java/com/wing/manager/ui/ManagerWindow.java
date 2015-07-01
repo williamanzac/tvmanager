@@ -27,7 +27,6 @@ import com.wing.manager.ui.components.EpisodeTableModel;
 import com.wing.manager.ui.components.ShowListCellRenderer;
 import com.wing.manager.ui.components.ShowListModel;
 import com.wing.search.ui.SearchDialog;
-import com.wing.torrent.copier.ui.CopierDialog;
 
 public class ManagerWindow extends JFrame {
 
@@ -134,19 +133,19 @@ public class ManagerWindow extends JFrame {
 				});
 				break;
 			case "copyEpisode":
-				EventQueue.invokeLater(() -> {
-					final CopierDialog dialog = new CopierDialog(managerService);
-					final Show show = showList.getSelectedValue();
-					final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
-					if (episode.getTorrentHash() != null) {
-						try {
-							final Torrent torrent = managerService.getTorrent(episode.getTorrentHash());
-							dialog.manageTorrentFiles(torrent);
-						} catch (final Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
+				// EventQueue.invokeLater(() -> {
+				// final CopierDialog dialog = new CopierDialog(torrentCopier);// managerService
+				// final Show show = showList.getSelectedValue();
+				// final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
+				// if (episode.getTorrentHash() != null) {
+				// try {
+				// final Torrent torrent = managerService.getTorrent(episode.getTorrentHash());
+				// // dialog.manageTorrentFiles(torrent);
+				// } catch (final Exception e) {
+				// e.printStackTrace();
+				// }
+				// }
+				// });
 				break;
 			case "configuration":
 				EventQueue.invokeLater(() -> {

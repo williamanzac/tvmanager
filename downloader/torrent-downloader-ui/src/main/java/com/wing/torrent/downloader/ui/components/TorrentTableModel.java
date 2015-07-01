@@ -1,6 +1,8 @@
 package com.wing.torrent.downloader.ui.components;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -14,16 +16,39 @@ public class TorrentTableModel extends AbstractTableModel {
 	private static final String[] columnNames = { "Name", "State", "Downloaded" };
 
 	private List<Torrent> list;
+	private Map<String, Torrent> map = new HashMap<>();
 	private final ManagerService managerService;
 
 	public TorrentTableModel(final ManagerService managerService) throws Exception {
 		this.managerService = managerService;
 		list = managerService.listTorrents();
+		for (Torrent torrent : list) {
+			map.put(torrent.getHash(), torrent);
+		}
 		final Thread thread = new Thread(() -> {
 			while (true) {
 				try {
-					list = managerService.listTorrents();
-					fireTableDataChanged();
+					final int oldsize = getRowCount();
+					final List<Torrent> newlist = managerService.listTorrents();
+					for (Torrent torrent : newlist) {
+						final String hash = torrent.getHash();
+						if (!map.containsKey(hash)) {
+							map.put(hash, torrent);
+							list.add(torrent);
+						} else {
+							final Torrent torrent2 = map.get(hash);
+							torrent2.setPercentComplete(torrent.getPercentComplete());
+							torrent2.setState(torrent.getState());
+							final int indexOf = list.indexOf(torrent2);
+							fireTableCellUpdated(indexOf, 1);
+							fireTableCellUpdated(indexOf, 2);
+						}
+					}
+					if (getRowCount() > oldsize) {
+						fireTableRowsInserted(oldsize, getRowCount());
+					} else if (getRowCount() < oldsize) {
+						fireTableRowsDeleted(getRowCount(), oldsize);
+					}
 					Thread.sleep(1000);
 				} catch (final Exception e) {
 					e.printStackTrace();

@@ -4,9 +4,10 @@ import com.wing.database.model.Torrent;
 
 public class TorrentPersistenceManager extends FilePersistenceManager<Torrent> {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Class<Torrent> forClass() {
-		return Torrent.class;
+	protected Class<Torrent>[] forClasses() {
+		return new Class[] { Torrent.class };
 	}
 
 }

@@ -131,4 +131,11 @@ public class DefaultManagerService implements ManagerService {
 	public Torrent getTorrent(@PathParam("hash") String hash) throws Exception {
 		return torrentPersistenceManager.retrieve(hash);
 	}
+
+	@GET
+	@Path("/torrents/search")
+	@Override
+	public List<Torrent> searchFor(@QueryParam("query") final String query) throws Exception {
+		return torrentSearchService.searchTorrent(query);
+	}
 }

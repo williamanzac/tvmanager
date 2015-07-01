@@ -7,6 +7,8 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -37,10 +39,8 @@ public class TorrentProjectTorrentSearchService implements TorrentSearchService 
 
 	@Override
 	public List<Torrent> searchTorrent(final String showName, final int season, final int episode) throws Exception {
-		final String url = MessageFormat.format(searchPattern, searchURL(showName, season, episode));
-		final InputStream response = getResponse(url);
-		final Document document = xmlReader.read(response);
-		return parseXML(document);
+		final String query = episodeQuery(showName, season, episode);
+		return searchTorrent(query);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -111,8 +111,35 @@ public class TorrentProjectTorrentSearchService implements TorrentSearchService 
 		return method.getResponseBodyAsStream();
 	}
 
-	private String searchURL(final String show, final int season, final int episode) throws Exception {
+	private String episodeQuery(final String show, final int season, final int episode) throws Exception {
 		final String formatString = String.format("%1$s s%2$02de%3$02d", show, season, episode);
-		return formatString.replaceAll("\\s", "+");
+		return formatString;
+	}
+
+	@Override
+	public List<Torrent> searchTorrent(String query) throws Exception {
+		query = query.replaceAll("\\s", "+");
+		final String url = MessageFormat.format(searchPattern, query);
+		final InputStream response = getResponse(url);
+		final Document document = xmlReader.read(response);
+		final List<Torrent> torrents = parseXML(document);
+		sort(torrents);
+		return torrents;
+	}
+
+	void sort(List<Torrent> torrents) {
+		Collections.sort(torrents, new Comparator<Torrent>() {
+			@Override
+			public int compare(Torrent o1, Torrent o2) {
+				int compare = Integer.compare(o1.getSeeds(), o2.getSeeds()) * -1;
+				if (compare == 0) {
+					compare = o1.getPubDate().compareTo(o2.getPubDate());
+					if (compare == 0) {
+						compare = o1.getTitle().compareTo(o2.getTitle());
+					}
+				}
+				return compare;
+			}
+		});
 	}
 }

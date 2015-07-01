@@ -13,10 +13,10 @@ import com.wing.database.api.PersistenceManager;
 
 public abstract class FilePersistenceManager<T> implements PersistenceManager<T> {
 
-	abstract protected Class<T> forClass();
+	abstract protected Class<T>[] forClasses();
 
 	protected File baseDir() {
-		final File dir = new File(forClass().getSimpleName().toLowerCase());
+		final File dir = new File(forClasses()[0].getSimpleName().toLowerCase());
 		if (!dir.exists()) {
 			dir.mkdirs();
 		}
@@ -28,7 +28,7 @@ public abstract class FilePersistenceManager<T> implements PersistenceManager<T>
 	public T retrieve(@PathParam("key") final String key) throws Exception {
 		final File file = new File(baseDir(), key + ".xml");
 		if (file.exists()) {
-			final JAXBContext ctx = JAXBContext.newInstance(new Class[] { forClass() });
+			final JAXBContext ctx = JAXBContext.newInstance(forClasses());
 			final Unmarshaller um = ctx.createUnmarshaller();
 			return (T) um.unmarshal(file);
 		}
@@ -37,7 +37,7 @@ public abstract class FilePersistenceManager<T> implements PersistenceManager<T>
 
 	@Override
 	public void save(@PathParam("key") final String key, final T value) throws Exception {
-		final JAXBContext ctx = JAXBContext.newInstance(new Class[] { forClass() });
+		final JAXBContext ctx = JAXBContext.newInstance(forClasses());
 		final Marshaller um = ctx.createMarshaller();
 		um.marshal(value, new File(baseDir(), key + ".xml"));
 	}

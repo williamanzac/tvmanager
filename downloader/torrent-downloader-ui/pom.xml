@@ -22,5 +22,10 @@
   		<artifactId>torrent-copier-ui</artifactId>
   		<version>${project.version}</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.wing</groupId>
+  		<artifactId>torrent-searcher-ui</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

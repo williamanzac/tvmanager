@@ -30,4 +30,6 @@ public interface ManagerService {
 	void saveConfiguration(Configuration configuration) throws Exception;
 
 	Torrent getTorrent(String hash) throws Exception;
+
+	List<Torrent> searchFor(String query) throws Exception;
 }

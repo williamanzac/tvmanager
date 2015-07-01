@@ -4,8 +4,9 @@ import com.wing.database.model.Show;
 
 public class ShowPersistenceManager extends FilePersistenceManager<Show> {
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Class<Show> forClass() {
-		return Show.class;
+	protected Class<Show>[] forClasses() {
+		return new Class[] { Show.class };
 	}
 }

@@ -10,6 +10,10 @@ public class ProgressCellRender extends JProgressBar implements TableCellRendere
 
 	private static final long serialVersionUID = 8226506466968456994L;
 
+	public ProgressCellRender() {
+		setStringPainted(true);
+	}
+
 	@Override
 	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
 			final boolean hasFocus, final int row, final int column) {

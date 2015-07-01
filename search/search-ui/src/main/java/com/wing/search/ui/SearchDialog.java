@@ -24,10 +24,10 @@ public class SearchDialog extends JDialog {
 
 	private static final long serialVersionUID = 117691005972291282L;
 
-	JTable table;
+	private JTable table;
 	JTextField textField;
-	JLabel lblNewLabel;
-	ShowTableModel tableModel = new ShowTableModel();
+	private JLabel lblNewLabel;
+	private ShowTableModel tableModel = new ShowTableModel();
 	JButton btnNewButton;
 
 	private final ManagerService managerService;
@@ -66,7 +66,7 @@ public class SearchDialog extends JDialog {
 		final ButtonActions buttonActions = new ButtonActions();
 		setBounds(100, 100, 450, 300);
 		setModal(true);
-		setTitle("Add Show");
+		setTitle("TV Show Searcher");
 		getContentPane().setLayout(new BorderLayout());
 		final JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
