@@ -83,7 +83,9 @@ public class TorrentCopier {
 
 	public void stop() {
 		stopping = true;
-		currentTask.setStopping(true);
+		if (currentTask != null) {
+			currentTask.setStopping(true);
+		}
 		try {
 			actionThread.join();
 		} catch (final InterruptedException e) {

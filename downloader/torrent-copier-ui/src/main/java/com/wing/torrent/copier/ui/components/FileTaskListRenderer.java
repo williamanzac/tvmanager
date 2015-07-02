@@ -1,5 +1,10 @@
 package com.wing.torrent.copier.ui.components;
 
+import static javax.swing.BorderFactory.createCompoundBorder;
+import static javax.swing.BorderFactory.createEmptyBorder;
+import static javax.swing.BorderFactory.createMatteBorder;
+
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.io.File;
@@ -7,7 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -21,7 +25,6 @@ import com.wing.torrent.copier.CopyTask;
 import com.wing.torrent.copier.DeleteTask;
 import com.wing.torrent.copier.FileTask;
 import com.wing.torrent.copier.MoveTask;
-import com.wing.torrent.copier.TorrentCopier;
 
 public class FileTaskListRenderer extends JPanel implements ListCellRenderer<FileTask> {
 	private static final long serialVersionUID = -236177389017890980L;
@@ -31,10 +34,8 @@ public class FileTaskListRenderer extends JPanel implements ListCellRenderer<Fil
 	private final JLabel title;
 	private final JLabel info;
 	private final JProgressBar progress;
-	private final TorrentCopier torrentCopier;
 
-	public FileTaskListRenderer(final TorrentCopier torrentCopier) {
-		this.torrentCopier = torrentCopier;
+	public FileTaskListRenderer() {
 		title = new JLabel();
 		info = new JLabel();
 		progress = new JProgressBar();
@@ -45,9 +46,10 @@ public class FileTaskListRenderer extends JPanel implements ListCellRenderer<Fil
 		infoFont = infoFont.deriveFont(infoFont.getSize() + 5f);
 		info.setFont(infoFont);
 
-		setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		title.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		info.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		final Color borderColor = getBackground().darker();
+		setBorder(createCompoundBorder(createMatteBorder(0, 0, 1, 0, borderColor), createEmptyBorder(10, 10, 10, 10)));
+		title.setBorder(createEmptyBorder(2, 0, 2, 0));
+		info.setBorder(createEmptyBorder(2, 0, 2, 0));
 
 		add(title);
 		add(info);

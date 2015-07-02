@@ -3,19 +3,18 @@ package com.wing.torrent.copier.ui;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
@@ -23,6 +22,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import com.wing.database.model.Configuration;
+import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.CopyTask;
 import com.wing.torrent.copier.DeleteTask;
 import com.wing.torrent.copier.FileTask;
@@ -46,6 +47,7 @@ public class FileManagerUI extends JFrame {
 	private JButton deleteButton;
 
 	private final TorrentCopier torrentCopier;
+	private final ManagerService managerService;
 
 	private final class FileLocationListener implements DocumentListener {
 		@Override
@@ -81,6 +83,17 @@ public class FileManagerUI extends JFrame {
 			case "browseTarget":
 				final JFileChooser chooser = new JFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				try {
+					final Configuration configuration = managerService.loadConfiguration();
+					if (command.equals("browseSource")) {
+						chooser.setCurrentDirectory(configuration.torrentDestination);
+					} else {
+						chooser.setCurrentDirectory(configuration.showDestination);
+					}
+				} catch (final Exception e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				chooser.showOpenDialog(FileManagerUI.this);
 				final File target = chooser.getSelectedFile();
 				if (target != null && target.exists()) {
@@ -137,12 +150,14 @@ public class FileManagerUI extends JFrame {
 	 * 
 	 * @throws Exception
 	 */
-	public FileManagerUI(final TorrentCopier torrentCopier) throws Exception {
+	public FileManagerUI(final TorrentCopier torrentCopier, final ManagerService managerService) throws Exception {
 		this.torrentCopier = torrentCopier;
+		this.managerService = managerService;
 		setTitle("File Actions");
 		setBounds(100, 100, 700, 300);
 		getContentPane().setLayout(new BorderLayout());
 		addWindowListener(new WindowActions());
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		final FileLocationListener fileLocationListener = new FileLocationListener();
 		final ButtonActions buttonActions = new ButtonActions();
 		{
@@ -211,34 +226,35 @@ public class FileManagerUI extends JFrame {
 			{
 				listModel = new FileTaskListModel(torrentCopier);
 				actionList = new JList<>(listModel);
-				actionList.setCellRenderer(new FileTaskListRenderer(torrentCopier));
+				actionList.setCellRenderer(new FileTaskListRenderer());
 				actionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				// actionList.setEnabled(false);
 				actionList.setBackground(getContentPane().getBackground());
 				actionList.setForeground(getContentPane().getForeground());
 			}
 			final JScrollPane scrollPane = new JScrollPane(actionList);
+			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			getContentPane().add(scrollPane, BorderLayout.CENTER);
 		}
-		{
-			final JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				final JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				okButton.addActionListener(buttonActions);
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				final JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				cancelButton.addActionListener(buttonActions);
-				buttonPane.add(cancelButton);
-			}
-		}
-		torrentCopier.start();
+		// {
+		// final JPanel buttonPane = new JPanel();
+		// buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		// getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		// {
+		// final JButton okButton = new JButton("OK");
+		// okButton.setActionCommand("OK");
+		// okButton.addActionListener(buttonActions);
+		// buttonPane.add(okButton);
+		// getRootPane().setDefaultButton(okButton);
+		// }
+		// {
+		// final JButton cancelButton = new JButton("Cancel");
+		// cancelButton.setActionCommand("Cancel");
+		// cancelButton.addActionListener(buttonActions);
+		// buttonPane.add(cancelButton);
+		// }
+		// }
+		// torrentCopier.start();
 	}
 
 	public void addCopyTask(final File source, final File target) throws Exception {

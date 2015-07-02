@@ -13,7 +13,7 @@ public class FileManagerMain extends AbstractMain {
 		setLookAndFeel(getSystemLookAndFeelClassName());
 		invokeLater(() -> {
 			try {
-				final FileManagerUI frame = new FileManagerUI(torrentCopier);
+				final FileManagerUI frame = new FileManagerUI(torrentCopier, managerService);
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setVisible(true);
 			} catch (final Exception e) {
