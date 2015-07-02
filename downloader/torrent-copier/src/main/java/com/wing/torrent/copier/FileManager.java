@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-public class TorrentCopier {
+public class FileManager {
 
 	private final TaskPersistenceManager persistenceManager = new TaskPersistenceManager();
 
@@ -23,7 +23,7 @@ public class TorrentCopier {
 		}
 	}
 
-	public TorrentCopier() throws Exception {
+	public FileManager() throws Exception {
 		final ChangeListener changeListener = new ChangeListener();
 		actionThread = new Thread(() -> {
 			while (!stopping) {

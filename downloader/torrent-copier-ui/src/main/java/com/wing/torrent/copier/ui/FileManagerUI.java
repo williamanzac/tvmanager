@@ -28,7 +28,7 @@ import com.wing.torrent.copier.CopyTask;
 import com.wing.torrent.copier.DeleteTask;
 import com.wing.torrent.copier.FileTask;
 import com.wing.torrent.copier.MoveTask;
-import com.wing.torrent.copier.TorrentCopier;
+import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.copier.ui.components.FileTaskListModel;
 import com.wing.torrent.copier.ui.components.FileTaskListRenderer;
 
@@ -46,7 +46,7 @@ public class FileManagerUI extends JFrame {
 	private JButton moveButton;
 	private JButton deleteButton;
 
-	private final TorrentCopier torrentCopier;
+	private final FileManager torrentCopier;
 	private final ManagerService managerService;
 
 	private final class FileLocationListener implements DocumentListener {
@@ -150,7 +150,7 @@ public class FileManagerUI extends JFrame {
 	 * 
 	 * @throws Exception
 	 */
-	public FileManagerUI(final TorrentCopier torrentCopier, final ManagerService managerService) throws Exception {
+	public FileManagerUI(final FileManager torrentCopier, final ManagerService managerService) throws Exception {
 		this.torrentCopier = torrentCopier;
 		this.managerService = managerService;
 		setTitle("File Actions");

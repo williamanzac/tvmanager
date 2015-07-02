@@ -5,15 +5,15 @@ import java.util.List;
 import javax.swing.AbstractListModel;
 
 import com.wing.torrent.copier.FileTask;
-import com.wing.torrent.copier.TorrentCopier;
+import com.wing.torrent.copier.FileManager;
 
 public class FileTaskListModel extends AbstractListModel<FileTask> {
 	private static final long serialVersionUID = 637499522844142872L;
 
 	private List<FileTask> list;
-	private final TorrentCopier torrentCopier;
+	private final FileManager torrentCopier;
 
-	public FileTaskListModel(final TorrentCopier torrentCopier) throws Exception {
+	public FileTaskListModel(final FileManager torrentCopier) throws Exception {
 		this.torrentCopier = torrentCopier;
 		list = torrentCopier.getTasks();
 		final Thread thread = new Thread(() -> {

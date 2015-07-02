@@ -42,7 +42,7 @@ import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.CopyTask;
 import com.wing.torrent.copier.FileTask;
 import com.wing.torrent.copier.MoveTask;
-import com.wing.torrent.copier.TorrentCopier;
+import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.downloader.TorrentDownloader;
 import com.wing.torrent.downloader.ui.components.CheckTreeManager;
 import com.wing.torrent.downloader.ui.components.FileTreeCellRenderer;
@@ -78,7 +78,7 @@ public class DownloaderClientUI extends JFrame {
 	private JButton stopTorrentButton;
 	private JButton delTorrentButton;
 
-	private final TorrentCopier torrentCopier;
+	private final FileManager torrentCopier;
 
 	private final class TorrentSelectionListener implements ListSelectionListener {
 		private List<DefaultMutableTreeNode> getNodes(File file) {
@@ -309,7 +309,7 @@ public class DownloaderClientUI extends JFrame {
 	 * @throws Exception
 	 */
 	public DownloaderClientUI(final ManagerService managerService, final TorrentDownloader torrentDownloader,
-			final TorrentCopier torrentCopier) throws Exception {
+			final FileManager torrentCopier) throws Exception {
 		this.managerService = managerService;
 		this.torrentCopier = torrentCopier;
 		setTitle("Torrent Download Client");
