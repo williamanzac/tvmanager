@@ -50,12 +50,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
-			<artifactId>torrent-copier</artifactId>
+			<artifactId>file-manager</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
-			<artifactId>torrent-copier-ui</artifactId>
+			<artifactId>file-manager-ui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
