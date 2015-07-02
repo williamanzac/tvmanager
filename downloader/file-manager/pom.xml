@@ -5,7 +5,7 @@
     <artifactId>downloader</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>torrent-copier</artifactId>
+  <artifactId>file-manager</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>commons-io</groupId>
