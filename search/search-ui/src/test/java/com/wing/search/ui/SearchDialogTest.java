@@ -31,7 +31,7 @@ public class SearchDialogTest {
 		when(searchService.searchShow(anyString())).thenReturn(new ArrayList<Show>());
 
 		cut.textField.setText("buffy");
-		cut.btnNewButton.doClick();
+		cut.searchButton.doClick();
 
 		verify(searchService).searchShow("buffy");
 	}

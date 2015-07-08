@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -86,6 +87,7 @@ public class ConfigurationDialog extends JDialog {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		final ButtonActions buttonActions = new ButtonActions();
+		setIconImage(new ImageIcon(getClass().getResource("main.png")).getImage());
 
 		final JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -97,7 +99,7 @@ public class ConfigurationDialog extends JDialog {
 		buttonPane.add(okButton);
 		getRootPane().setDefaultButton(okButton);
 
-		final JButton cancelButton = new JButton("Cancel");
+		final JButton cancelButton = new JButton("CANCEL");
 		cancelButton.setActionCommand("Cancel");
 		cancelButton.addActionListener(buttonActions);
 		buttonPane.add(cancelButton);
@@ -126,7 +128,7 @@ public class ConfigurationDialog extends JDialog {
 			txtTorrentDestination.setText(destination.getAbsolutePath());
 		}
 
-		final JButton btnTorrentDestination = new JButton("Browse");
+		final JButton btnTorrentDestination = new JButton("BROWSE");
 		btnTorrentDestination.setActionCommand("browseDestination");
 		btnTorrentDestination.addActionListener(buttonActions);
 		torrentPanel.add(btnTorrentDestination, "6, 2");
@@ -172,7 +174,7 @@ public class ConfigurationDialog extends JDialog {
 			txtShowDestination.setText(destination.getAbsolutePath());
 		}
 
-		final JButton btnShowDestination = new JButton("Browse");
+		final JButton btnShowDestination = new JButton("BROWSE");
 		btnShowDestination.setActionCommand("browseShowDestination");
 		btnShowDestination.addActionListener(buttonActions);
 		showPanel.add(btnShowDestination, "6, 2");

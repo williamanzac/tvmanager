@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -40,14 +41,15 @@ import com.wing.database.model.Torrent;
 import com.wing.database.model.TorrentState;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.CopyTask;
+import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.copier.FileTask;
 import com.wing.torrent.copier.MoveTask;
-import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.downloader.TorrentDownloader;
 import com.wing.torrent.downloader.ui.components.CheckTreeManager;
 import com.wing.torrent.downloader.ui.components.FileTreeCellRenderer;
 import com.wing.torrent.downloader.ui.components.ProgressCellRender;
 import com.wing.torrent.downloader.ui.components.TorrentTableModel;
+import com.wing.torrent.downloader.ui.components.UIButton;
 import com.wing.torrent.searcher.SearchDialog;
 
 public class DownloaderClientUI extends JFrame {
@@ -73,10 +75,10 @@ public class DownloaderClientUI extends JFrame {
 	private JButton copyFileButton;
 	private JButton delFileButton;
 
-	private JButton startTorrentButton;
-	private JButton pauseTorrentButton;
-	private JButton stopTorrentButton;
-	private JButton delTorrentButton;
+	private UIButton startTorrentButton;
+	private UIButton pauseTorrentButton;
+	private UIButton stopTorrentButton;
+	private UIButton delTorrentButton;
 
 	private final FileManager torrentCopier;
 
@@ -319,6 +321,7 @@ public class DownloaderClientUI extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setLayout(new BorderLayout());
 		setContentPane(contentPane);
+		setIconImage(new ImageIcon(getClass().getResource("main.png")).getImage());
 
 		final JTabbedPane infoPane = new JTabbedPane();
 
@@ -355,13 +358,13 @@ public class DownloaderClientUI extends JFrame {
 		final JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 
-		final JButton addButton = new JButton("Add Torrent");
+		final UIButton addButton = new UIButton("../open.png");
 		addButton.setToolTipText("Add a torrent to the queue");
 		addButton.setActionCommand("addTorrent");
 		addButton.addActionListener(buttonActions);
 		toolBar.add(addButton);
 
-		final JButton searchButton = new JButton("Search Torrent");
+		final UIButton searchButton = new UIButton("../search.png");
 		searchButton.setToolTipText("Search for a torrent to the queue");
 		searchButton.setActionCommand("searchTorrent");
 		searchButton.addActionListener(buttonActions);
@@ -369,28 +372,28 @@ public class DownloaderClientUI extends JFrame {
 
 		toolBar.addSeparator();
 
-		startTorrentButton = new JButton("Start");
+		startTorrentButton = new UIButton("../start.png");
 		startTorrentButton.setToolTipText("Start downloading the torrent");
 		startTorrentButton.setActionCommand("startTorrent");
 		startTorrentButton.addActionListener(buttonActions);
 		startTorrentButton.setEnabled(false);
 		toolBar.add(startTorrentButton);
 
-		pauseTorrentButton = new JButton("Pause");
+		pauseTorrentButton = new UIButton("../pause.png");
 		pauseTorrentButton.setToolTipText("Pause the torrent");
 		pauseTorrentButton.setActionCommand("pauseTorrent");
 		pauseTorrentButton.addActionListener(buttonActions);
 		pauseTorrentButton.setEnabled(false);
 		toolBar.add(pauseTorrentButton);
 
-		stopTorrentButton = new JButton("Stop");
+		stopTorrentButton = new UIButton("../stop.png");
 		stopTorrentButton.setToolTipText("Stop downloading the torrent");
 		stopTorrentButton.setActionCommand("stopTorrent");
 		stopTorrentButton.addActionListener(buttonActions);
 		stopTorrentButton.setEnabled(false);
 		toolBar.add(stopTorrentButton);
 
-		delTorrentButton = new JButton("Remove");
+		delTorrentButton = new UIButton("../delete.png");
 		delTorrentButton.setToolTipText("Remove the torrent");
 		delTorrentButton.setActionCommand("delTorrent");
 		delTorrentButton.addActionListener(buttonActions);
@@ -399,7 +402,8 @@ public class DownloaderClientUI extends JFrame {
 
 		toolBar.addSeparator();
 
-		final JButton configButton = new JButton("Configuration");
+		final UIButton configButton = new UIButton("../settings.png");
+		configButton.setToolTipText("Configuration");
 		configButton.setActionCommand("configuration");
 		configButton.addActionListener(buttonActions);
 		toolBar.add(configButton);
@@ -435,19 +439,19 @@ public class DownloaderClientUI extends JFrame {
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		panel.add(buttonPane, BorderLayout.SOUTH);
 
-		moveFileButton = new JButton("Move");
+		moveFileButton = new UIButton("../move.png");
 		moveFileButton.setActionCommand("moveFile");
 		moveFileButton.addActionListener(buttonActions);
 		moveFileButton.setEnabled(false);
 		buttonPane.add(moveFileButton);
 
-		copyFileButton = new JButton("Copy");
+		copyFileButton = new UIButton("../copy.png");
 		copyFileButton.setActionCommand("copyFile");
 		copyFileButton.addActionListener(buttonActions);
 		copyFileButton.setEnabled(false);
 		buttonPane.add(copyFileButton);
 
-		delFileButton = new JButton("Delete");
+		delFileButton = new UIButton("../delete.png");
 		delFileButton.setActionCommand("deleteFile");
 		delFileButton.addActionListener(buttonActions);
 		delFileButton.setEnabled(false);

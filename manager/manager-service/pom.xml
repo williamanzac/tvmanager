@@ -20,11 +20,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
-			<artifactId>TvRage</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.wing</groupId>
 			<artifactId>database-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -39,16 +34,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.3.0.RC0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-servlet</artifactId>
-			<version>9.3.0.RC0</version>
-		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-jetty-servlet</artifactId>

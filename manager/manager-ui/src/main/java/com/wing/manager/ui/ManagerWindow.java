@@ -5,7 +5,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -26,6 +26,7 @@ import com.wing.manager.service.ManagerService;
 import com.wing.manager.ui.components.EpisodeTableModel;
 import com.wing.manager.ui.components.ShowListCellRenderer;
 import com.wing.manager.ui.components.ShowListModel;
+import com.wing.manager.ui.components.UIButton;
 import com.wing.search.ui.SearchDialog;
 
 public class ManagerWindow extends JFrame {
@@ -42,14 +43,14 @@ public class ManagerWindow extends JFrame {
 
 	private final EpisodeTableModel tableModel;
 
-	private final JButton delShowButton;
+	private final UIButton delShowButton;
 
-	private final JButton updateButton;
+	private final UIButton updateButton;
 
-	private final JButton copyButton;
+	private final UIButton copyButton;
 
-	private final JButton watchButton;
-	private final JButton searchButton;
+	private final UIButton watchButton;
+	private final UIButton searchButton;
 
 	private class ButtonActions implements ActionListener {
 		@Override
@@ -201,11 +202,13 @@ public class ManagerWindow extends JFrame {
 		this.managerService = managerService;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(50, 50, 1024, 600);
+		setIconImage(new ImageIcon(getClass().getResource("main.png")).getImage());
+		final ButtonActions buttonActions = new ButtonActions();
+
 		contentPane = new JPanel();
 		contentPane.setBorder(null);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		final ButtonActions buttonActions = new ButtonActions();
 
 		tableModel = new EpisodeTableModel();
 		episodeTable = new JTable(tableModel);
@@ -233,13 +236,13 @@ public class ManagerWindow extends JFrame {
 		toolBar.setFloatable(false);
 		contentPane.add(toolBar, BorderLayout.NORTH);
 
-		final JButton addShowButton = new JButton("Add Show");
+		final UIButton addShowButton = new UIButton("../add.png");
 		addShowButton.setToolTipText("Add a new Show");
 		addShowButton.setActionCommand("addShow");
 		addShowButton.addActionListener(buttonActions);
 		toolBar.add(addShowButton);
 
-		delShowButton = new JButton("Remove Show");
+		delShowButton = new UIButton("../delete.png");
 		delShowButton.setToolTipText("Remove the currently selected Show");
 		delShowButton.setActionCommand("delShow");
 		delShowButton.addActionListener(buttonActions);
@@ -248,7 +251,7 @@ public class ManagerWindow extends JFrame {
 
 		toolBar.addSeparator();
 
-		updateButton = new JButton("Update");
+		updateButton = new UIButton("../update.png");
 		updateButton.setToolTipText("Update the Episode List for the current show");
 		updateButton.setActionCommand("update");
 		updateButton.addActionListener(buttonActions);
@@ -257,21 +260,21 @@ public class ManagerWindow extends JFrame {
 
 		toolBar.addSeparator();
 
-		watchButton = new JButton("Watched");
+		watchButton = new UIButton("../watched.png");
 		watchButton.setToolTipText("Mark the Current Episode as being watched");
 		watchButton.setEnabled(false);
 		watchButton.setActionCommand("watchEpisode");
 		watchButton.addActionListener(buttonActions);
 		toolBar.add(watchButton);
 
-		copyButton = new JButton("Copy");
+		copyButton = new UIButton("../copy.png");
 		copyButton.setToolTipText("Copy the current to target");
 		copyButton.setEnabled(false);
 		copyButton.setActionCommand("copyEpisode");
 		copyButton.addActionListener(buttonActions);
 		toolBar.add(copyButton);
 
-		searchButton = new JButton("Search");
+		searchButton = new UIButton("../search.png");
 		searchButton.setToolTipText("Find and Queue the current Episode for download");
 		searchButton.setEnabled(false);
 		searchButton.setActionCommand("searchEpisode");
@@ -280,7 +283,7 @@ public class ManagerWindow extends JFrame {
 
 		toolBar.addSeparator();
 
-		final JButton configButton = new JButton("Configuration");
+		final UIButton configButton = new UIButton("../settings.png");
 		configButton.setActionCommand("configuration");
 		configButton.addActionListener(buttonActions);
 		toolBar.add(configButton);

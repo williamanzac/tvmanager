@@ -128,6 +128,9 @@ public class TorrentProjectTorrentSearchService implements TorrentSearchService 
 	}
 
 	void sort(List<Torrent> torrents) {
+		if (torrents == null) {
+			return;
+		}
 		Collections.sort(torrents, new Comparator<Torrent>() {
 			@Override
 			public int compare(Torrent o1, Torrent o2) {

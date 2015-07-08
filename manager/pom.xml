@@ -10,5 +10,6 @@
   <modules>
   	<module>manager-service</module>
   	<module>manager-ui</module>
+  	<module>manager-service-web</module>
   </modules>
 </project>

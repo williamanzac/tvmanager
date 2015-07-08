@@ -58,5 +58,10 @@
 			<artifactId>file-manager-ui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.eclipsesource.jaxrs</groupId>
+			<artifactId>consumer</artifactId>
+			<version>3.2</version>
+		</dependency>
 	</dependencies>
 </project>

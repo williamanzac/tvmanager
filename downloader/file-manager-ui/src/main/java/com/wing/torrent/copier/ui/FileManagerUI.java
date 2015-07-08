@@ -10,10 +10,9 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -26,25 +25,24 @@ import com.wing.database.model.Configuration;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.CopyTask;
 import com.wing.torrent.copier.DeleteTask;
+import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.copier.FileTask;
 import com.wing.torrent.copier.MoveTask;
-import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.copier.ui.components.FileTaskListModel;
 import com.wing.torrent.copier.ui.components.FileTaskListRenderer;
+import com.wing.torrent.copier.ui.components.UIButton;
 
 public class FileManagerUI extends JFrame {
 	private static final long serialVersionUID = 3341828669621715070L;
 
 	private JTextField sourceField;
-	private JLabel sourceLabel;
 	private JTextField targetField;
-	private JLabel targetLabel;
 	private JList<FileTask> actionList;
 	private FileTaskListModel listModel;
 
-	private JButton copyButton;
-	private JButton moveButton;
-	private JButton deleteButton;
+	private UIButton copyButton;
+	private UIButton moveButton;
+	private UIButton deleteButton;
 
 	private final FileManager torrentCopier;
 	private final ManagerService managerService;
@@ -158,6 +156,7 @@ public class FileManagerUI extends JFrame {
 		getContentPane().setLayout(new BorderLayout());
 		addWindowListener(new WindowActions());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setIconImage(new ImageIcon(getClass().getResource("main.png")).getImage());
 		final FileLocationListener fileLocationListener = new FileLocationListener();
 		final ButtonActions buttonActions = new ButtonActions();
 		{
@@ -165,57 +164,51 @@ public class FileManagerUI extends JFrame {
 			toolBar.setFloatable(false);
 			getContentPane().add(toolBar, BorderLayout.NORTH);
 			{
-				sourceLabel = new JLabel("Source:");
-				toolBar.add(sourceLabel);
-			}
-			{
 				sourceField = new JTextField();
-				sourceLabel.setLabelFor(sourceField);
+				sourceField.setToolTipText("Source File Location");
 				toolBar.add(sourceField);
 				sourceField.setColumns(10);
 				sourceField.getDocument().addDocumentListener(fileLocationListener);
 			}
 			{
-				final JButton sourceButton = new JButton("Browse");
+				final UIButton sourceButton = new UIButton("../browse.png");
 				sourceButton.setActionCommand("browseSource");
+				sourceButton.setToolTipText("Browse for source file");
 				sourceButton.addActionListener(buttonActions);
 				toolBar.add(sourceButton);
 			}
 			toolBar.addSeparator();
 			{
-				targetLabel = new JLabel("Target:");
-				toolBar.add(targetLabel);
-			}
-			{
 				targetField = new JTextField();
-				targetLabel.setLabelFor(targetField);
+				targetField.setToolTipText("Target Location");
 				toolBar.add(targetField);
 				targetField.setColumns(10);
 				targetField.getDocument().addDocumentListener(fileLocationListener);
 			}
 			{
-				final JButton targetButton = new JButton("Browse");
+				final UIButton targetButton = new UIButton("../browse.png");
 				targetButton.setActionCommand("browseTarget");
+				targetButton.setToolTipText("Browse for target location");
 				targetButton.addActionListener(buttonActions);
 				toolBar.add(targetButton);
 			}
 			toolBar.addSeparator();
 			{
-				copyButton = new JButton("Copy");
+				copyButton = new UIButton("../copy.png");
 				copyButton.setActionCommand("copyFile");
 				copyButton.addActionListener(buttonActions);
 				copyButton.setEnabled(false);
 				toolBar.add(copyButton);
 			}
 			{
-				moveButton = new JButton("Move");
+				moveButton = new UIButton("../move.png");
 				moveButton.setActionCommand("moveFile");
 				moveButton.addActionListener(buttonActions);
 				moveButton.setEnabled(false);
 				toolBar.add(moveButton);
 			}
 			{
-				deleteButton = new JButton("Delete");
+				deleteButton = new UIButton("../delete.png");
 				deleteButton.setActionCommand("deleteFile");
 				deleteButton.addActionListener(buttonActions);
 				deleteButton.setEnabled(false);
@@ -236,25 +229,7 @@ public class FileManagerUI extends JFrame {
 			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			getContentPane().add(scrollPane, BorderLayout.CENTER);
 		}
-		// {
-		// final JPanel buttonPane = new JPanel();
-		// buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		// getContentPane().add(buttonPane, BorderLayout.SOUTH);
-		// {
-		// final JButton okButton = new JButton("OK");
-		// okButton.setActionCommand("OK");
-		// okButton.addActionListener(buttonActions);
-		// buttonPane.add(okButton);
-		// getRootPane().setDefaultButton(okButton);
-		// }
-		// {
-		// final JButton cancelButton = new JButton("Cancel");
-		// cancelButton.setActionCommand("Cancel");
-		// cancelButton.addActionListener(buttonActions);
-		// buttonPane.add(cancelButton);
-		// }
-		// }
-		// torrentCopier.start();
+		torrentCopier.start();
 	}
 
 	public void addCopyTask(final File source, final File target) throws Exception {

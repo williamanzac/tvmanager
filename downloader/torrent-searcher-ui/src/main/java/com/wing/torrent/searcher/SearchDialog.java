@@ -7,9 +7,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -20,6 +20,7 @@ import javax.swing.ListSelectionModel;
 import com.wing.database.model.Torrent;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.searcher.components.TorrentTableModel;
+import com.wing.torrent.searcher.components.UIButton;
 
 public class SearchDialog extends JDialog {
 
@@ -68,6 +69,8 @@ public class SearchDialog extends JDialog {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		final ButtonActions buttonActions = new ButtonActions();
+		setIconImage(new ImageIcon(getClass().getResource("main.png")).getImage());
+
 		{
 			{
 				tableModel = new TorrentTableModel();
@@ -90,7 +93,7 @@ public class SearchDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				final JButton cancelButton = new JButton("Cancel");
+				final JButton cancelButton = new JButton("CANCEL");
 				cancelButton.setActionCommand("Cancel");
 				cancelButton.addActionListener(buttonActions);
 				buttonPane.add(cancelButton);
@@ -100,17 +103,15 @@ public class SearchDialog extends JDialog {
 			final JToolBar toolBar = new JToolBar();
 			toolBar.setFloatable(false);
 			getContentPane().add(toolBar, BorderLayout.NORTH);
-			final JLabel lblNewLabel = new JLabel("Name:");
-			toolBar.add(lblNewLabel);
+
 			textField = new JTextField();
-			lblNewLabel.setLabelFor(textField);
-			toolBar.add(textField);
 			textField.setColumns(10);
-			final JButton btnNewButton = new JButton("Search");
+			toolBar.add(textField);
+
+			final UIButton btnNewButton = new UIButton("../search.png");
 			btnNewButton.setActionCommand("Search");
 			btnNewButton.addActionListener(buttonActions);
 			toolBar.add(btnNewButton);
-
 		}
 	}
 

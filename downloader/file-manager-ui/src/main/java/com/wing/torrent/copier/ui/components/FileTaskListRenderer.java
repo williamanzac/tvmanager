@@ -87,6 +87,9 @@ public class FileTaskListRenderer extends JPanel implements ListCellRenderer<Fil
 	}
 
 	String toDisplayPath(final File file) {
+		if (file == null) {
+			return "";
+		}
 		String path;
 		try {
 			path = file.getCanonicalPath();

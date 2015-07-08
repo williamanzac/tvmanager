@@ -51,4 +51,9 @@ Temporary Items
 
 main/show/*.xml
 main/torrent/*.xml
+main/filetask/*.xml
 *.gitignore
+
+manager/manager-service-web/show/*.xml
+manager/manager-service-web/torrent/*.xml
+manager/manager-service-web/filetask/*.xml
