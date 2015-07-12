@@ -1,4 +1,4 @@
-package com.wing.torrent.copier.ui;
+package com.wing.file.manager.ui;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
@@ -22,15 +22,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import com.wing.database.model.Configuration;
+import com.wing.file.manager.ui.components.FileTaskListModel;
+import com.wing.file.manager.ui.components.FileTaskListRenderer;
+import com.wing.file.manager.ui.components.UIButton;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.CopyTask;
 import com.wing.torrent.copier.DeleteTask;
 import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.copier.FileTask;
 import com.wing.torrent.copier.MoveTask;
-import com.wing.torrent.copier.ui.components.FileTaskListModel;
-import com.wing.torrent.copier.ui.components.FileTaskListRenderer;
-import com.wing.torrent.copier.ui.components.UIButton;
 
 public class FileManagerUI extends JFrame {
 	private static final long serialVersionUID = 3341828669621715070L;

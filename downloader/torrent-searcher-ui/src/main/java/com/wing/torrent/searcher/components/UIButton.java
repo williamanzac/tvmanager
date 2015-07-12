@@ -1,7 +1,5 @@
 package com.wing.torrent.searcher.components;
 
-import static javax.swing.BorderFactory.createEmptyBorder;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -10,6 +8,5 @@ public class UIButton extends JButton {
 
 	public UIButton(final String resource) {
 		super(new ImageIcon(UIButton.class.getResource(resource)));
-		setBorder(createEmptyBorder(12, 12, 12, 12));
 	}
 }

@@ -12,6 +12,6 @@ public class ManagerApplication extends ResourceConfig {
 	public ManagerApplication() {
 		// packages("com.wing.manager.service", "com.wing.manager.web.provider");
 		register(WebManagerService.class);
-		packages(WebManagerService.class.getPackage().getName());
+		// packages(WebManagerService.class.getPackage().getName());
 	}
 }

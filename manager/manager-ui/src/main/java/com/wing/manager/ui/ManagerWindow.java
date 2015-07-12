@@ -181,13 +181,16 @@ public class ManagerWindow extends JFrame {
 		public void valueChanged(final ListSelectionEvent e) {
 			if (!e.getValueIsAdjusting()) {
 				final Show show = listModel.getElementAt(showList.getSelectedIndex());
-				final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
-				watchButton.setEnabled(episode.getState() == null
-						|| EpisodeState.WATCHED.compareTo(episode.getState()) > 0);
-				copyButton.setEnabled(episode.getState() == null
-						|| EpisodeState.DOWNLOADED.compareTo(episode.getState()) > 0);
-				searchButton.setEnabled(episode.getState() == null
-						|| EpisodeState.QUEUED.compareTo(episode.getState()) > 0);
+				final int selectedRow = episodeTable.getSelectedRow();
+				if (selectedRow >= 0) {
+					final Episode episode = show.getEpisodeList().get(selectedRow);
+					watchButton.setEnabled(episode.getState() == null
+							|| EpisodeState.WATCHED.compareTo(episode.getState()) > 0);
+					copyButton.setEnabled(episode.getState() == null
+							|| EpisodeState.DOWNLOADED.compareTo(episode.getState()) > 0);
+					searchButton.setEnabled(episode.getState() == null
+							|| EpisodeState.QUEUED.compareTo(episode.getState()) > 0);
+				}
 			}
 		}
 	}
@@ -207,7 +210,7 @@ public class ManagerWindow extends JFrame {
 
 		contentPane = new JPanel();
 		contentPane.setBorder(null);
-		contentPane.setLayout(new BorderLayout(0, 0));
+		contentPane.setLayout(new BorderLayout());
 		setContentPane(contentPane);
 
 		tableModel = new EpisodeTableModel();
@@ -215,6 +218,8 @@ public class ManagerWindow extends JFrame {
 		episodeTable.setFillsViewportHeight(true);
 		episodeTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		episodeTable.getSelectionModel().addListSelectionListener(new EpisodeSelectionListener());
+		episodeTable.setShowHorizontalLines(true);
+		episodeTable.setShowVerticalLines(false);
 
 		final JScrollPane tableScrollPane = new JScrollPane(episodeTable);
 

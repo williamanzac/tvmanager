@@ -1,4 +1,4 @@
-package com.wing.torrent.copier.ui.components;
+package com.wing.file.manager.ui.components;
 
 import java.util.List;
 

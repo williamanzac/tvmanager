@@ -1,4 +1,4 @@
-package com.wing.torrent.copier.ui.components;
+package com.wing.file.manager.ui.components;
 
 import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -43,13 +43,13 @@ public class FileTaskListRenderer extends JPanel implements ListCellRenderer<Fil
 		final BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
 		setLayout(layout);
 		Font infoFont = info.getFont();
-		infoFont = infoFont.deriveFont(infoFont.getSize() + 5f);
+		infoFont = infoFont.deriveFont(infoFont.getSize() + 4f);
 		info.setFont(infoFont);
 
 		final Color borderColor = getBackground().darker();
-		setBorder(createCompoundBorder(createMatteBorder(0, 0, 1, 0, borderColor), createEmptyBorder(10, 10, 10, 10)));
-		title.setBorder(createEmptyBorder(2, 0, 2, 0));
-		info.setBorder(createEmptyBorder(2, 0, 2, 0));
+		setBorder(createCompoundBorder(createMatteBorder(0, 0, 1, 0, borderColor), createEmptyBorder(16, 16, 16, 16)));
+		title.setBorder(createEmptyBorder(4, 0, 4, 0));
+		info.setBorder(createEmptyBorder(4, 0, 4, 0));
 
 		add(title);
 		add(info);
@@ -72,16 +72,14 @@ public class FileTaskListRenderer extends JPanel implements ListCellRenderer<Fil
 		if (value instanceof CopyTask) {
 			title.setText("Copying " + displaySource + " to " + displayTarget);
 			progress.setIndeterminate(false);
-			info.setText("Progress: " + displayProgress + "%");
 		} else if (value instanceof MoveTask) {
 			title.setText("Moving " + displaySource + " to " + displayTarget);
 			progress.setIndeterminate(false);
-			info.setText("Progress: " + displayProgress + "%");
 		} else if (value instanceof DeleteTask) {
 			title.setText("Deleting " + displaySource);
 			progress.setIndeterminate(true);
-			info.setText("");
 		}
+		info.setText("Progress: " + displayProgress + "%");
 		progress.setValue(displayProgress);
 		return this;
 	}

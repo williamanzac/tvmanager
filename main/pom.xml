@@ -63,5 +63,10 @@
 			<artifactId>consumer</artifactId>
 			<version>3.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.eclipsesource.jaxrs</groupId>
+			<artifactId>jersey-all</artifactId>
+			<version>2.18</version>
+		</dependency>
 	</dependencies>
 </project>

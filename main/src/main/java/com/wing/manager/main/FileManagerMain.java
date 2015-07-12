@@ -6,7 +6,7 @@ import static javax.swing.UIManager.setLookAndFeel;
 
 import javax.swing.JFrame;
 
-import com.wing.torrent.copier.ui.FileManagerUI;
+import com.wing.file.manager.ui.FileManagerUI;
 
 public class FileManagerMain extends AbstractMain {
 	public static void main(final String[] args) throws Exception {
