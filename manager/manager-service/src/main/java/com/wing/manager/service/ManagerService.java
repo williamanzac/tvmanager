@@ -14,6 +14,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.wing.database.model.Configuration;
+import com.wing.database.model.Episode;
 import com.wing.database.model.Show;
 import com.wing.database.model.Torrent;
 
@@ -35,14 +36,29 @@ public interface ManagerService {
 	void saveShow(final Show show) throws Exception;
 
 	@POST
-	@Path("/shows")
+	@Path("/shows/{id:.*}")
 	@Consumes(MediaType.APPLICATION_XML)
-	void removeShow(final Show show) throws Exception;
+	void removeShow(final int showId) throws Exception;
 
 	@PUT
-	@Path("/shows/episodes")
+	@Path("/shows/{id:.*}/episodes")
 	@Consumes(MediaType.APPLICATION_XML)
-	void updateEpisodes(final Show show) throws Exception;
+	void updateEpisodes(final int showId) throws Exception;
+
+	@GET
+	@Path("/shows/{id:.*}/episodes")
+	@Produces(MediaType.APPLICATION_XML)
+	List<Episode> listEpisodes(final int showId) throws Exception;
+
+	@PUT
+	@Path("/episodes")
+	@Consumes(MediaType.APPLICATION_XML)
+	void saveEpisode(final Episode episode) throws Exception;
+
+	@POST
+	@Path("/shows/{showId:.*}/episodes/{epnum:.*}")
+	@Consumes(MediaType.APPLICATION_XML)
+	void removeEpisode(final int showId, final int epnum) throws Exception;
 
 	@GET
 	@Path("/torrents")

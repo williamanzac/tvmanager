@@ -68,4 +68,11 @@ public class EpisodeTableModel extends AbstractTableModel {
 		this.episodes = episodes;
 		fireTableDataChanged();
 	}
+
+	public Episode getEpisode(final int index) {
+		if (index < 0) {
+			return null;
+		}
+		return episodes.get(index);
+	}
 }

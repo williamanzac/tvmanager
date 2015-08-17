@@ -33,14 +33,13 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.commons.io.FileUtils;
-
 import com.wing.configuration.ui.ConfigurationDialog;
 import com.wing.database.model.Configuration;
 import com.wing.database.model.Torrent;
 import com.wing.database.model.TorrentState;
 import com.wing.manager.service.ManagerService;
 import com.wing.torrent.copier.CopyTask;
+import com.wing.torrent.copier.DeleteTask;
 import com.wing.torrent.copier.FileManager;
 import com.wing.torrent.copier.FileTask;
 import com.wing.torrent.copier.MoveTask;
@@ -115,36 +114,40 @@ public class DownloaderClientUI extends JFrame {
 					stopTorrentButton.setEnabled(false);
 					delTorrentButton.setEnabled(false);
 
+					checkTreeManager.getSelectionModel().clearSelection();
+
 					if (selectedRow < 0) {
+						final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+						treeModel.setRoot(root);
+						tree.setRootVisible(false);
 						return;
 					}
 					final Torrent torrent = managerService.listTorrents().get(selectedRow);
 					if (torrent != null) {
 						final String title = torrent.getTitle();
 						final File source = new File(dest, title);
-						// System.out.println(source);
-					final DefaultMutableTreeNode root = new DefaultMutableTreeNode(source);
-					List<DefaultMutableTreeNode> nodes = getNodes(source);
-					for (DefaultMutableTreeNode defaultMutableTreeNode : nodes) {
-						root.add(defaultMutableTreeNode);
-					}
-					treeModel.setRoot(root);
-					tree.setRootVisible(true);
+						final DefaultMutableTreeNode root = new DefaultMutableTreeNode(source);
+						List<DefaultMutableTreeNode> nodes = getNodes(source);
+						for (DefaultMutableTreeNode defaultMutableTreeNode : nodes) {
+							root.add(defaultMutableTreeNode);
+						}
+						treeModel.setRoot(root);
+						tree.setRootVisible(true);
 
-					startTorrentButton.setEnabled(torrent.getState() == TorrentState.QUEUED
-							|| torrent.getState() == TorrentState.PAUSED);
-					pauseTorrentButton.setEnabled(torrent.getState() == TorrentState.DOWNLOADING);
-					stopTorrentButton.setEnabled(torrent.getState() == TorrentState.DOWNLOADING);
-					delTorrentButton.setEnabled(true);
-				} else {
-					final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
-					treeModel.setRoot(root);
-					tree.setRootVisible(false);
+						startTorrentButton.setEnabled(torrent.getState() == TorrentState.QUEUED
+								|| torrent.getState() == TorrentState.PAUSED);
+						pauseTorrentButton.setEnabled(torrent.getState() == TorrentState.DOWNLOADING);
+						stopTorrentButton.setEnabled(true);
+						delTorrentButton.setEnabled(true);
+					} else {
+						final DefaultMutableTreeNode root = new DefaultMutableTreeNode();
+						treeModel.setRoot(root);
+						tree.setRootVisible(false);
+					}
+				} catch (final Exception e1) {
+					e1.printStackTrace();
 				}
-			} catch (final Exception e1) {
-				e1.printStackTrace();
-			}
-		})	;
+			});
 		}
 	}
 
@@ -209,16 +212,18 @@ public class DownloaderClientUI extends JFrame {
 					for (final TreePath path : checkedPaths) {
 						final DefaultMutableTreeNode sourceNode = (DefaultMutableTreeNode) path.getLastPathComponent();
 						final File source = (File) sourceNode.getUserObject();
-						final File dest = new File(targetDir, source.getName());
-						final FileTask task;
-						if ("moveFile".equals(command)) {
-							System.out.println("moving: " + source + " to " + dest);
-							task = new MoveTask(source, dest);
-						} else {
-							System.out.println("copying: " + source + " to " + dest);
-							task = new CopyTask(source, dest);
+						if (source.isFile()) {
+							final File dest = new File(targetDir, source.getName());
+							final FileTask task;
+							if ("moveFile".equals(command)) {
+								System.out.println("moving: " + source + " to " + dest);
+								task = new MoveTask(source, dest);
+							} else {
+								System.out.println("copying: " + source + " to " + dest);
+								task = new CopyTask(source, dest);
+							}
+							torrentCopier.addTask(task);
 						}
-						torrentCopier.addTask(task);
 					}
 				} catch (final Exception e1) {
 					e1.printStackTrace();
@@ -237,7 +242,7 @@ public class DownloaderClientUI extends JFrame {
 									.getLastPathComponent();
 							final File source = (File) sourceNode.getUserObject();
 							System.out.println("deleting: " + source);
-							FileUtils.forceDelete(source);
+							torrentCopier.addTask(new DeleteTask(source));
 						}
 					} catch (final Exception e1) {
 						e1.printStackTrace();
@@ -284,6 +289,12 @@ public class DownloaderClientUI extends JFrame {
 					if (torrent != null) {
 						torrentDownloader.removeTorrent(torrent);
 						tableModel.remove(selectedRow);
+						final Configuration configuration = managerService.loadConfiguration();
+						final File dest = configuration.torrentDestination;
+						final String title = torrent.getTitle();
+						final File source = new File(dest, title);
+						System.out.println("deleting: " + source);
+						torrentCopier.addTask(new DeleteTask(source));
 					}
 				} catch (Exception e1) {
 					e1.printStackTrace();

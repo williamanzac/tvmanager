@@ -43,7 +43,7 @@ public class ShowListModel extends AbstractListModel<Show> {
 
 	public Show remove(final int index) throws Exception {
 		final Show show = list.remove(index);
-		managerService.removeShow(show);
+		managerService.removeShow(show.getId());
 		fireIntervalRemoved(this, index, index);
 		return show;
 	}

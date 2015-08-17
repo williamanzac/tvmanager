@@ -4,6 +4,7 @@ import static javax.swing.BorderFactory.createCompoundBorder;
 import static javax.swing.BorderFactory.createEmptyBorder;
 import static javax.swing.BorderFactory.createMatteBorder;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
@@ -13,11 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -33,26 +36,36 @@ public class FileTaskListRenderer extends JPanel implements ListCellRenderer<Fil
 
 	private final JLabel title;
 	private final JLabel info;
+	private final JPanel infoPanel;
+	private final JButton deleteButton;
 	private final JProgressBar progress;
 
 	public FileTaskListRenderer() {
 		title = new JLabel();
 		info = new JLabel();
 		progress = new JProgressBar();
-
-		final BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
-		setLayout(layout);
-		Font infoFont = info.getFont();
-		infoFont = infoFont.deriveFont(infoFont.getSize() + 4f);
-		info.setFont(infoFont);
+		infoPanel = new JPanel(new BorderLayout());
+		deleteButton = new JButton("DELETE");
 
 		final Color borderColor = getBackground().darker();
 		setBorder(createCompoundBorder(createMatteBorder(0, 0, 1, 0, borderColor), createEmptyBorder(16, 16, 16, 16)));
-		title.setBorder(createEmptyBorder(4, 0, 4, 0));
+		final BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+		setLayout(layout);
+
+		Font infoFont = info.getFont();
+		infoFont = infoFont.deriveFont(infoFont.getSize() + 4f);
+		info.setFont(infoFont);
 		info.setBorder(createEmptyBorder(4, 0, 4, 0));
 
+		infoPanel.add(info, BorderLayout.CENTER);
+		infoPanel.add(deleteButton, BorderLayout.EAST);
+		infoPanel.setOpaque(false);
+
+		title.setBorder(createEmptyBorder(4, 0, 4, 0));
+		title.setHorizontalAlignment(SwingConstants.LEFT);
+
 		add(title);
-		add(info);
+		add(infoPanel);
 		add(progress);
 	}
 
@@ -79,6 +92,7 @@ public class FileTaskListRenderer extends JPanel implements ListCellRenderer<Fil
 			title.setText("Deleting " + displaySource);
 			progress.setIndeterminate(true);
 		}
+		title.setHorizontalAlignment(SwingConstants.LEFT);
 		info.setText("Progress: " + displayProgress + "%");
 		progress.setValue(displayProgress);
 		return this;

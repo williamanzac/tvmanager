@@ -1,6 +1,7 @@
 package com.wing.manager.main;
 
 import com.wing.configuration.service.ConfigurationService;
+import com.wing.database.service.EpisodePersistenceManager;
 import com.wing.database.service.ShowPersistenceManager;
 import com.wing.database.service.TorrentPersistenceManager;
 import com.wing.manager.service.DefaultManagerService;
@@ -16,10 +17,11 @@ public class AbstractMain {
 	static final TvRageShowSearchService searchService = new TvRageShowSearchService();
 	static final ShowPersistenceManager persistenceManager = new ShowPersistenceManager();
 	static final TorrentPersistenceManager torrentPersistenceManager = new TorrentPersistenceManager();
+	static final EpisodePersistenceManager episodePersistenceManager = new EpisodePersistenceManager();
 	static final TorrentSearchService torrentSearchService = new TorrentProjectTorrentSearchService();
 	static final ConfigurationService configurationService = new ConfigurationService();
 	protected static final ManagerService managerService = new DefaultManagerService(searchService, persistenceManager,
-			torrentPersistenceManager, torrentSearchService, configurationService);
+			torrentPersistenceManager, torrentSearchService, configurationService, episodePersistenceManager);
 	// static ManagerService managerService = ApiProxy.create(ManagerService.class, "http://localhost:8080");
 	protected static UTorrentDownloader torrentDownloader;
 	protected static FileManager torrentCopier;

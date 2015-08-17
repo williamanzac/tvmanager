@@ -2,6 +2,7 @@ package com.wing.torrent.copier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.List;
 
 public class FileManager {
@@ -61,7 +62,17 @@ public class FileManager {
 	}
 
 	public List<FileTask> getTasks() throws Exception {
-		return persistenceManager.list();
+		List<FileTask> list = persistenceManager.list();
+		Collections.sort(list, (o1, o2) -> {
+			if (o1 instanceof DeleteTask && !(o2 instanceof DeleteTask)) {
+				return 1;
+			}
+			if (o2 instanceof DeleteTask && !(o1 instanceof DeleteTask)) {
+				return -1;
+			}
+			return o1.source.compareTo(o2.source);
+		});
+		return list;
 	}
 
 	public void addTask(final FileTask task) throws Exception {

@@ -1,8 +1,6 @@
 package com.wing.database.model;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -21,7 +19,8 @@ public class Show {
 	private String status;
 	private String classification;
 	private List<String> genres;
-	private List<Episode> episodeList = new ArrayList<>();
+
+	// private List<Episode> episodeList = new ArrayList<>();
 
 	// <showid>2930</showid>
 	// <name>Buffy the Vampire Slayer</name>
@@ -124,19 +123,13 @@ public class Show {
 	public void setGenres(final List<String> genres) {
 		this.genres = genres;
 	}
-
-	@XmlElement(name = "episode")
-	@XmlElementWrapper(name = "episodeList")
-	public List<Episode> getEpisodeList() {
-		return episodeList;
-	}
-
-	public void setEpisodeList(final List<Episode> episodeList) {
-		this.episodeList = episodeList;
-	}
-
-	public void setEpisodeList(final Set<Episode> episodeList) {
-		this.episodeList.clear();
-		this.episodeList.addAll(episodeList);
-	}
+	//
+	// @XmlTransient
+	// public List<Episode> getEpisodeList() {
+	// return episodeList;
+	// }
+	//
+	// public void setEpisodeList(final List<Episode> episodeList) {
+	// this.episodeList = episodeList;
+	// }
 }

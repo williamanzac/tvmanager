@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "episode")
 public class Episode implements Comparable<Episode> {
+	private int showId;
 	private int number;
 	private int season;
 	private int epnum;
@@ -70,7 +71,11 @@ public class Episode implements Comparable<Episode> {
 
 	@Override
 	public int compareTo(final Episode that) {
-		final int compare = Integer.compare(epnum, that.epnum);
+		int compare;
+		compare = Integer.compare(showId, that.showId);
+		if (compare == 0) {
+			compare = Integer.compare(epnum, that.epnum) * -1;
+		}
 		return compare;
 	}
 
@@ -99,5 +104,14 @@ public class Episode implements Comparable<Episode> {
 
 	public void setTorrentHash(final String torrentHash) {
 		this.torrentHash = torrentHash;
+	}
+
+	@XmlElement
+	public int getShowId() {
+		return showId;
+	}
+
+	public void setShowId(int showId) {
+		this.showId = showId;
 	}
 }

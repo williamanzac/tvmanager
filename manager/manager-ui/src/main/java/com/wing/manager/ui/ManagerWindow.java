@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -75,6 +76,11 @@ public class ManagerWindow extends JFrame {
 				EventQueue.invokeLater(() -> {
 					try {
 						listModel.remove(showList.getSelectedIndex());
+						final Show show = showList.getSelectedValue();
+						final List<Episode> listEpisodes = managerService.listEpisodes(show.getId());
+						for (Episode episode : listEpisodes) {
+							managerService.removeEpisode(show.getId(), episode.getEpnum());
+						}
 					} catch (final Exception e) {
 						e.printStackTrace();
 					}
@@ -85,11 +91,9 @@ public class ManagerWindow extends JFrame {
 					final Show show = showList.getSelectedValue();
 					if (show != null) {
 						try {
-							managerService.updateEpisodes(show);
-							tableModel.setEpisodes(show.getEpisodeList());
+							managerService.updateEpisodes(show.getId());
+							tableModel.setEpisodes(managerService.listEpisodes(show.getId()));
 							managerService.saveShow(show);
-							episodeTable.scrollRectToVisible(episodeTable.getCellRect(episodeTable.getRowCount() - 1,
-									0, true));
 						} catch (final Exception e) {
 							e.printStackTrace();
 						}
@@ -101,35 +105,33 @@ public class ManagerWindow extends JFrame {
 					final com.wing.torrent.searcher.SearchDialog dialog = new com.wing.torrent.searcher.SearchDialog(
 							managerService);
 					final Show show = showList.getSelectedValue();
-					final Episode episode = show.getEpisodeList().get(episodeTable.getSelectedRow());
-					try {
-						dialog.searchFor(show.getName(), episode.getSeason(), episode.getNumber());
-						final Torrent torrent = dialog.getSelectedTorrent();
-						if (torrent != null) {
-							managerService.saveTorrent(torrent);
-							episode.setTorrentHash(torrent.getHash());
-							episode.setState(EpisodeState.QUEUED);
-							managerService.saveShow(show);
+					final Episode episode = tableModel.getEpisode(episodeTable.getSelectedRow());
+					if (episode != null) {
+						try {
+							dialog.searchFor(show.getName(), episode.getSeason(), episode.getNumber());
+							final Torrent torrent = dialog.getSelectedTorrent();
+							if (torrent != null) {
+								managerService.saveTorrent(torrent);
+								episode.setTorrentHash(torrent.getHash());
+								episode.setState(EpisodeState.QUEUED);
+								managerService.saveEpisode(episode);
+							}
+						} catch (final Exception e) {
+							e.printStackTrace();
 						}
-					} catch (final Exception e) {
-						e.printStackTrace();
 					}
 				});
 				break;
 			case "watchEpisode":
 				EventQueue.invokeLater(() -> {
-					final Show selectedShow = showList.getSelectedValue();
-					final Episode selectedEpisode = selectedShow.getEpisodeList().get(episodeTable.getSelectedRow());
-					for (final Episode episode : selectedShow.getEpisodeList()) {
-						episode.setState(EpisodeState.WATCHED);
-						if (episode.equals(selectedEpisode)) {
-							break;
+					final Episode selectedEpisode = tableModel.getEpisode(episodeTable.getSelectedRow());
+					if (selectedEpisode != null) {
+						selectedEpisode.setState(EpisodeState.WATCHED);
+						try {
+							managerService.saveEpisode(selectedEpisode);
+						} catch (final Exception e) {
+							e.printStackTrace();
 						}
-					}
-					try {
-						managerService.saveShow(selectedShow);
-					} catch (final Exception e) {
-						e.printStackTrace();
 					}
 				});
 				break;
@@ -168,8 +170,11 @@ public class ManagerWindow extends JFrame {
 			final Show show = listModel.getElementAt(showList.getSelectedIndex());
 			final boolean b = show != null;
 			if (b) {
-				tableModel.setEpisodes(show.getEpisodeList());
-				episodeTable.scrollRectToVisible(episodeTable.getCellRect(episodeTable.getRowCount() - 1, 0, true));
+				try {
+					tableModel.setEpisodes(managerService.listEpisodes(show.getId()));
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 			delShowButton.setEnabled(b);
 			updateButton.setEnabled(b);
@@ -180,10 +185,8 @@ public class ManagerWindow extends JFrame {
 		@Override
 		public void valueChanged(final ListSelectionEvent e) {
 			if (!e.getValueIsAdjusting()) {
-				final Show show = listModel.getElementAt(showList.getSelectedIndex());
-				final int selectedRow = episodeTable.getSelectedRow();
-				if (selectedRow >= 0) {
-					final Episode episode = show.getEpisodeList().get(selectedRow);
+				final Episode episode = tableModel.getEpisode(episodeTable.getSelectedRow());
+				if (episode != null) {
 					watchButton.setEnabled(episode.getState() == null
 							|| EpisodeState.WATCHED.compareTo(episode.getState()) > 0);
 					copyButton.setEnabled(episode.getState() == null

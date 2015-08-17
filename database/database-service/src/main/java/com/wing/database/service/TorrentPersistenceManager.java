@@ -9,5 +9,4 @@ public class TorrentPersistenceManager extends FilePersistenceManager<Torrent> {
 	protected Class<Torrent>[] forClasses() {
 		return new Class[] { Torrent.class };
 	}
-
 }
