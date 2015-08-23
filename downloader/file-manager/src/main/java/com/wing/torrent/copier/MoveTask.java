@@ -15,8 +15,7 @@ import org.apache.commons.io.FileUtils;
 
 @XmlRootElement
 public class MoveTask extends FileTask {
-	@SuppressWarnings("unused")
-	private MoveTask() {
+	MoveTask() {
 		super();
 	}
 

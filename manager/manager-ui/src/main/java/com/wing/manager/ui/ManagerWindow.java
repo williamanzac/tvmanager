@@ -124,13 +124,15 @@ public class ManagerWindow extends JFrame {
 				break;
 			case "watchEpisode":
 				EventQueue.invokeLater(() -> {
-					final Episode selectedEpisode = tableModel.getEpisode(episodeTable.getSelectedRow());
-					if (selectedEpisode != null) {
-						selectedEpisode.setState(EpisodeState.WATCHED);
-						try {
-							managerService.saveEpisode(selectedEpisode);
-						} catch (final Exception e) {
-							e.printStackTrace();
+					for (int i : episodeTable.getSelectedRows()) {
+						final Episode selectedEpisode = tableModel.getEpisode(i);
+						if (selectedEpisode != null) {
+							selectedEpisode.setState(EpisodeState.WATCHED);
+							try {
+								managerService.saveEpisode(selectedEpisode);
+							} catch (final Exception e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				});

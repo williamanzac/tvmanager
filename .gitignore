@@ -54,6 +54,10 @@ main/torrent/*.xml
 main/filetask/*.xml
 main/episode/*.xml
 *.gitignore
+db.lck
+db.log
+db.properties
+db.script
 
 manager/manager-service-web/show/*.xml
 manager/manager-service-web/torrent/*.xml

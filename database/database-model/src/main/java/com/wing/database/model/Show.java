@@ -1,5 +1,6 @@
 package com.wing.database.model;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -18,7 +19,7 @@ public class Show {
 	private int seasons;
 	private String status;
 	private String classification;
-	private List<String> genres;
+	private List<String> genres = Collections.emptyList();
 
 	// private List<Episode> episodeList = new ArrayList<>();
 

@@ -17,7 +17,7 @@ public class FileManager {
 		@Override
 		public void propertyChange(final PropertyChangeEvent evt) {
 			try {
-				persistenceManager.save(currentTask.getId().toString(), currentTask);
+				persistenceManager.save(currentTask);
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
@@ -48,7 +48,11 @@ public class FileManager {
 				currentTask.run();
 				currentTask.removePropertyChangeListener(changeListener);
 				if (currentTask.getProgress() >= 100 && !currentTask.isStopping()) {
-					persistenceManager.delete(currentTask.getId().toString());
+					try {
+						persistenceManager.delete(currentTask.getId().toString());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			try {
@@ -62,7 +66,7 @@ public class FileManager {
 	}
 
 	public List<FileTask> getTasks() throws Exception {
-		List<FileTask> list = persistenceManager.list();
+		final List<FileTask> list = persistenceManager.list();
 		Collections.sort(list, (o1, o2) -> {
 			if (o1 instanceof DeleteTask && !(o2 instanceof DeleteTask)) {
 				return 1;
@@ -76,14 +80,14 @@ public class FileManager {
 	}
 
 	public void addTask(final FileTask task) throws Exception {
-		persistenceManager.save(task.getId().toString(), task);
+		persistenceManager.save(task);
 	}
 
 	public FileTask getTask(final String key) throws Exception {
 		return persistenceManager.retrieve(key);
 	}
 
-	public void deleteTask(final String key) {
+	public void deleteTask(final String key) throws Exception {
 		persistenceManager.delete(key);
 	}
 

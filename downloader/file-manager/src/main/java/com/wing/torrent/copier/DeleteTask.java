@@ -9,8 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 @XmlRootElement
 public class DeleteTask extends FileTask {
-	@SuppressWarnings("unused")
-	private DeleteTask() {
+	DeleteTask() {
 		super();
 	}
 

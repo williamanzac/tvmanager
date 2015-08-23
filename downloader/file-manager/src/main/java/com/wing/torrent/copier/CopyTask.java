@@ -13,8 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class CopyTask extends FileTask {
-	@SuppressWarnings("unused")
-	private CopyTask() {
+	CopyTask() {
 		super();
 	}
 

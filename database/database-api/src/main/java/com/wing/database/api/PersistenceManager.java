@@ -6,9 +6,9 @@ public interface PersistenceManager<T> {
 
 	public T retrieve(final String key) throws Exception;
 
-	public void save(final String key, final T value) throws Exception;
+	public void save(final T value) throws Exception;
 
-	public void delete(final String key);
+	public void delete(final String key) throws Exception;
 
 	public List<T> list() throws Exception;
 }

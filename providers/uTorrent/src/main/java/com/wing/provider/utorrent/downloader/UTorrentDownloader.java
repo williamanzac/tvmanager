@@ -46,39 +46,36 @@ public class UTorrentDownloader extends TorrentDownloader {
 		monitorThread = new Thread(() -> {
 			while (running) {
 				try {
-					// get current list
-				final List<Torrent> torrents = managerService.listTorrents();
-				for (final Torrent torrent : torrents) {
-					queue.put(torrent.getHash(), torrent);
-					if (torrent.getState() == null) {
-						// add to uTorrent
-						addTorrent(torrent);
-					}
-				}
-
-				// update from uTorrent complete/state
-				final List<Torrent> torrentList = getTorrentList();
-				for (final Torrent torrent : torrentList) {
-					final Torrent torrent2 = queue.get(torrent.getHash());
-					if (torrent2 != null) {
-						torrent2.setPercentComplete(torrent.getPercentComplete());
-						torrent2.setState(torrent.getState());
-						managerService.saveTorrent(torrent2);
-					} else {
+					final List<Torrent> torrents = managerService.listTorrents();
+					for (final Torrent torrent : torrents) {
 						queue.put(torrent.getHash(), torrent);
-						managerService.saveTorrent(torrent);
+						if (torrent.getState() == null) {
+							addTorrent(torrent);
+						}
 					}
+
+					final List<Torrent> torrentList = getTorrentList();
+					for (final Torrent torrent : torrentList) {
+						final Torrent torrent2 = queue.get(torrent.getHash());
+						if (torrent2 != null) {
+							torrent2.setPercentComplete(torrent.getPercentComplete());
+							torrent2.setState(torrent.getState());
+							managerService.saveTorrent(torrent2);
+						} else {
+							queue.put(torrent.getHash(), torrent);
+							managerService.saveTorrent(torrent);
+						}
+					}
+				} catch (final Exception e) {
+					e.printStackTrace();
 				}
-			} catch (final Exception e) {
-				e.printStackTrace();
+				try {
+					Thread.sleep(1000);
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
 			}
-			try {
-				Thread.sleep(1000);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}	);
+		});
 	}
 
 	@Override

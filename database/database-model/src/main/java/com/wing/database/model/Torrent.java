@@ -1,6 +1,7 @@
 package com.wing.database.model;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class Torrent {
 	private String hash;
 	private URL url;
 	private Date pubDate;
-	private Set<String> categories;
+	private Set<String> categories = Collections.emptySet();
 	private TorrentState state;
 	private float percentComplete;
 

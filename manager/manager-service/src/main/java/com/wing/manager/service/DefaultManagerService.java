@@ -52,7 +52,7 @@ public class DefaultManagerService implements ManagerService {
 
 	@Override
 	public void saveShow(final Show show) throws Exception {
-		showManager.save(Integer.toString(show.getId()), show);
+		showManager.save(show);
 	}
 
 	@Override
@@ -105,8 +105,7 @@ public class DefaultManagerService implements ManagerService {
 
 	@Override
 	public void saveEpisode(final Episode episode) throws Exception {
-		episodePersistenceManager.save(format("{0,number,##}{1,number,##}", episode.getShowId(), episode.getEpnum()),
-				episode);
+		episodePersistenceManager.save(episode);
 	}
 
 	@Override
@@ -116,7 +115,7 @@ public class DefaultManagerService implements ManagerService {
 
 	@Override
 	public void saveTorrent(final Torrent torrent) throws Exception {
-		torrentPersistenceManager.save(torrent.getHash(), torrent);
+		torrentPersistenceManager.save(torrent);
 	}
 
 	@Override

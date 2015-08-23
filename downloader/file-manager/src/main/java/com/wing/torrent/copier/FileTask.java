@@ -77,4 +77,32 @@ public abstract class FileTask implements Runnable {
 	public boolean isStopping() {
 		return stopping;
 	}
+
+	void setId(UUID id) {
+		this.id = id;
+	}
+
+	void setSource(File source) {
+		this.source = source;
+	}
+
+	void setTarget(File target) {
+		this.target = target;
+	}
+
+	void setTotalBytes(long totalBytes) {
+		this.totalBytes = totalBytes;
+	}
+
+	void setCopiedBytes(long copiedBytes) {
+		this.copiedBytes = copiedBytes;
+	}
+
+	public long getTotalBytes() {
+		return totalBytes;
+	}
+
+	public long getCopiedBytes() {
+		return copiedBytes;
+	}
 }
