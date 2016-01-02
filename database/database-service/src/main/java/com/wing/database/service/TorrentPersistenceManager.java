@@ -20,7 +20,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 	@Override
 	public Torrent retrieve(final String hash) throws Exception {
 		final PreparedStatement statement = con.prepareStatement("select * from torrents where hash=?");
-		statement.setString(1, hash);
+		statement.setString(1, hash.toUpperCase());
 		final ResultSet resultSet = statement.executeQuery();
 		Torrent torrent = null;
 		while (resultSet.next()) {
@@ -56,7 +56,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 			statement = con
 					.prepareStatement("insert into torrents (hash,title,seeds,leechers,size,url,pubDate,categories,state,percentComplete) values (?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(8, Joiner.on(",").join(value.getCategories()));
-			statement.setString(1, value.getHash());
+			statement.setString(1, value.getHash().toUpperCase());
 			statement.setInt(4, value.getLeechers());
 			statement.setFloat(10, value.getPercentComplete());
 			if (value.getPubDate() != null) {
@@ -82,7 +82,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 			statement = con
 					.prepareStatement("update torrents set (title,seeds,leechers,size,url,pubDate,categories,state,percentComplete) = (?,?,?,?,?,?,?,?,?) where hash = ?");
 			statement.setString(7, Joiner.on(",").join(value.getCategories()));
-			statement.setString(10, value.getHash());
+			statement.setString(10, value.getHash().toUpperCase());
 			statement.setInt(3, value.getLeechers());
 			statement.setFloat(9, value.getPercentComplete());
 			if (value.getPubDate() != null) {
@@ -110,7 +110,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 	@Override
 	public void delete(final String hash) throws Exception {
 		final PreparedStatement statement = con.prepareStatement("delete from torrents where hash=?");
-		statement.setString(1, hash);
+		statement.setString(1, hash.toUpperCase());
 		statement.executeUpdate();
 	}
 
@@ -124,7 +124,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 			final String[] strings = resultSet.getString(8).split(",");
 			final Set<String> categories = new HashSet<>(Arrays.asList(strings));
 			torrent.setCategories(categories);
-			torrent.setHash(resultSet.getString(1));
+			torrent.setHash(resultSet.getString(1).toUpperCase());
 			torrent.setLeechers(resultSet.getInt(4));
 			torrent.setPercentComplete(resultSet.getFloat(10));
 			torrent.setPubDate(resultSet.getDate(7));

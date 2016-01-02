@@ -16,5 +16,6 @@
     <module>database-api</module>
     <module>database-service</module>
     <module>database-model</module>
+    <module>database-ui</module>
   </modules>
 </project>
