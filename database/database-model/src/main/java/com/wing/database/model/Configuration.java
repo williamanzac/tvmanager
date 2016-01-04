@@ -15,4 +15,6 @@ public class Configuration {
 	public String torrentPassword;
 	@XmlElement
 	public File showDestination;
+	@XmlElement
+	public String tvdbApiKey;
 }

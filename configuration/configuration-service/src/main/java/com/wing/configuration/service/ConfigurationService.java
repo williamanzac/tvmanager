@@ -20,6 +20,7 @@ public class ConfigurationService {
 	private static final String TORRENT_USERNAME = "torrent.username";
 	private static final String TORRENT_PASSWORD = "torrent.password";
 	private static final String SHOW_DESTINATION = "show.destination";
+	private static final String SHOW_API_KEY = "show.apikey";
 	private static final File file = new File("tvmanager.conf");
 	private Configuration configuration;
 
@@ -45,6 +46,9 @@ public class ConfigurationService {
 				if (value != null) {
 					configuration.showDestination = new File(value);
 				}
+
+				value = properties.getProperty(SHOW_API_KEY);
+				configuration.tvdbApiKey = value;
 			} else {
 				configuration.torrentPassword = DEFAULT_PASSWORD;
 				configuration.torrentUsername = DEFAULT_USERNAME;
@@ -60,6 +64,7 @@ public class ConfigurationService {
 		properties.setProperty(TORRENT_USERNAME, configuration.torrentUsername);
 		properties.setProperty(TORRENT_PASSWORD, configuration.torrentPassword);
 		properties.setProperty(SHOW_DESTINATION, configuration.showDestination.getAbsolutePath());
+		properties.setProperty(SHOW_API_KEY, configuration.tvdbApiKey);
 
 		properties.store(new FileWriter(file), "");
 	}
@@ -76,6 +81,7 @@ public class ConfigurationService {
 		return properties.getProperty(key);
 	}
 
+	@SuppressWarnings("unused")
 	<T> T getPropertyForField(final Field field, final Properties properties, final Class<T> clazz) {
 		final String key = fieldNameToString(field);
 		final String strVal = properties.getProperty(key);

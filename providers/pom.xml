@@ -14,5 +14,6 @@
     <module>TorrentProject</module>
     <module>uTorrent</module>
     <module>TTorrent</module>
+    <module>TheTVDB</module>
   </modules>
 </project>

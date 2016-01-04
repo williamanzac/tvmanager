@@ -38,10 +38,16 @@ public class EpisodePersistenceManager extends DatabasePersistenceManager<Episod
 
 	@Override
 	public Episode retrieve(final String key) throws Exception {
+		final String[] parts = key.split("-");
+		return retrieve(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+	}
+
+	public Episode retrieve(final int showId, final int season, final int number) throws Exception {
 		final PreparedStatement statement = con
-				.prepareStatement("select * from episodes where showId = ? and epnum = ?");
-		statement.setInt(1, showId(key));
-		statement.setInt(2, epnum(key));
+				.prepareStatement("select * from episodes where showId = ? and season = ? and number = ?");
+		statement.setInt(1, showId);
+		statement.setInt(2, season);
+		statement.setInt(3, number);
 		final ResultSet resultSet = statement.executeQuery();
 		Episode episode = null;
 		while (resultSet.next()) {
@@ -62,24 +68,14 @@ public class EpisodePersistenceManager extends DatabasePersistenceManager<Episod
 		return episode;
 	}
 
-	public String key(final Episode episode) {
-		return episode.getShowId() + "-" + episode.getEpnum();
-	}
-
-	private int showId(final String key) {
-		return Integer.parseInt(key.split("-")[0]);
-	}
-
-	private int epnum(final String key) {
-		return Integer.parseInt(key.split("-")[1]);
-	}
-
 	@Override
 	public void save(final Episode value) throws Exception {
-		final Episode existing = retrieve(key(value));
+		final Episode existing = retrieve(value.getShowId(), value.getSeason(), value.getNumber());
+		System.out.println(existing);
 		PreparedStatement statement;
 		if (existing == null) {
 			// add new row
+			System.out.println("new");
 			statement = con
 					.prepareStatement("insert into episodes (showId,number,season,epnum,airdate,link,title,state,torrentHash) values (?,?,?,?,?,?,?,?,?)");
 			if (value.getAirdate() != null) {
@@ -101,16 +97,18 @@ public class EpisodePersistenceManager extends DatabasePersistenceManager<Episod
 			statement.setString(9, value.getTorrentHash());
 		} else {
 			// update row
+			System.out.println("update");
 			statement = con
-					.prepareStatement("update episodes set (number,season,airdate,link,title,state,torrentHash) = (?,?,?,?,?,?,?) where showId = ? and epnum = ?");
+					.prepareStatement("update episodes set (number,season,airdate,link,title,state,torrentHash) = (?,?,?,?,?,?,?) where showId = ? and season = ? and number = ?");
 			if (value.getAirdate() != null) {
 				statement.setDate(3, new Date(value.getAirdate().getTime()));
 			} else {
 				statement.setDate(3, null);
 			}
-			statement.setInt(9, value.getEpnum());
+			statement.setInt(9, value.getSeason());
 			statement.setString(4, value.getLink());
 			statement.setInt(1, value.getNumber());
+			statement.setInt(10, value.getNumber());
 			statement.setInt(2, value.getSeason());
 			statement.setInt(8, value.getShowId());
 			if (value.getState() != null) {
@@ -126,9 +124,15 @@ public class EpisodePersistenceManager extends DatabasePersistenceManager<Episod
 
 	@Override
 	public void delete(final String key) throws Exception {
+		final String[] parts = key.split("-");
+		delete(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
+	}
+
+	public void delete(final int showId, final int season, final int number) throws Exception {
 		final PreparedStatement statement = con.prepareStatement("delete from episodes where showId = ? and epnum = ?");
-		statement.setInt(1, showId(key));
-		statement.setInt(2, epnum(key));
+		statement.setInt(1, showId);
+		statement.setInt(2, season);
+		statement.setInt(3, number);
 		statement.executeUpdate();
 	}
 

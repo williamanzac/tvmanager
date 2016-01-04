@@ -52,7 +52,7 @@ public class DatabaseUI {
 		JScrollPane scrollPane = new JScrollPane();
 		splitPane.setLeftComponent(scrollPane);
 
-		JList list = new JList();
+		JList<String> list = new JList<>();
 		scrollPane.setViewportView(list);
 
 		JScrollPane scrollPane_1 = new JScrollPane();

@@ -1,12 +1,11 @@
 package com.wing.manager.service;
 
-import static java.text.MessageFormat.format;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.wing.configuration.service.ConfigurationService;
 import com.wing.database.api.PersistenceManager;
@@ -64,33 +63,41 @@ public class DefaultManagerService implements ManagerService {
 	public void updateEpisodes(final int showId) throws Exception {
 		final Collection<Episode> filteredList = listEpisodes(showId);
 		final Show show = showManager.retrieve(Integer.toString(showId));
-		final Map<Integer, Episode> episodeMap = new HashMap<>();
+		final Map<String, Episode> episodeMap = new HashMap<>();
 		for (final Episode episode : filteredList) {
-			episodeMap.put(episode.getEpnum(), episode);
+			episodeMap.put(getNumber(episode), episode);
 		}
 		final List<Episode> newList = searchService.getEpisodeList(show.getId());
+		System.out.println(newList);
 		for (final Episode episode : newList) {
-			final Episode orgEpi = episodeMap.get(episode.getEpnum());
+			System.out.println("episode: " + episode);
+			final Episode orgEpi = episodeMap.get(getNumber(episode));
+			System.out.println("orgEpi: " + orgEpi);
 			if (orgEpi == null) {
 				episode.setShowId(show.getId());
-				episodeMap.put(episode.getEpnum(), episode);
+				episodeMap.put(getNumber(episode), episode);
 			} else {
+				orgEpi.setShowId(show.getId());
 				orgEpi.setAirdate(episode.getAirdate());
 				orgEpi.setTitle(episode.getTitle());
 			}
 		}
-		for (final Episode episode : episodeMap.values()) {
-			saveEpisode(episode);
+		for (final Entry<String, Episode> entry : episodeMap.entrySet()) {
+			saveEpisode(entry.getValue());
 		}
 	}
 
-	@Override
-	public void removeEpisode(int showId, int epnum) throws Exception {
-		episodePersistenceManager.delete(format("{0,number,##}{1,number,##}", showId, epnum));
+	private String getNumber(final Episode episode) {
+		return String.format("s%1$02de%2$02d", episode.getSeason(), episode.getNumber());
 	}
 
 	@Override
-	public List<Episode> listEpisodes(int showId) throws Exception {
+	public void removeEpisode(final int showId, final int season, final int number) throws Exception {
+		episodePersistenceManager.delete(showId, season, number);
+	}
+
+	@Override
+	public List<Episode> listEpisodes(final int showId) throws Exception {
 		final List<Episode> allEpisodes = episodePersistenceManager.list(showId);
 		// final Collection<Episode> filteredList = Collections2.filter(allEpisodes, new Predicate<Episode>() {
 		// @Override

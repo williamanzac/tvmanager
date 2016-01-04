@@ -8,6 +8,9 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @XmlRootElement(name = "show")
 public class Show {
 	private int id;
@@ -124,6 +127,7 @@ public class Show {
 	public void setGenres(final List<String> genres) {
 		this.genres = genres;
 	}
+
 	//
 	// @XmlTransient
 	// public List<Episode> getEpisodeList() {
@@ -133,4 +137,9 @@ public class Show {
 	// public void setEpisodeList(final List<Episode> episodeList) {
 	// this.episodeList = episodeList;
 	// }
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
 }

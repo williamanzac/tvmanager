@@ -75,11 +75,12 @@ public class ManagerWindow extends JFrame {
 			case "delShow":
 				EventQueue.invokeLater(() -> {
 					try {
-						listModel.remove(showList.getSelectedIndex());
-						final Show show = showList.getSelectedValue();
-						final List<Episode> listEpisodes = managerService.listEpisodes(show.getId());
-						for (Episode episode : listEpisodes) {
-							managerService.removeEpisode(show.getId(), episode.getEpnum());
+						final Show show = listModel.remove(showList.getSelectedIndex());
+						if (show != null) {
+							final List<Episode> listEpisodes = managerService.listEpisodes(show.getId());
+							for (final Episode episode : listEpisodes) {
+								managerService.removeEpisode(show.getId(), episode.getSeason(), episode.getNumber());
+							}
 						}
 					} catch (final Exception e) {
 						e.printStackTrace();
@@ -124,7 +125,7 @@ public class ManagerWindow extends JFrame {
 				break;
 			case "watchEpisode":
 				EventQueue.invokeLater(() -> {
-					for (int i : episodeTable.getSelectedRows()) {
+					for (final int i : episodeTable.getSelectedRows()) {
 						final Episode selectedEpisode = tableModel.getEpisode(i);
 						if (selectedEpisode != null) {
 							selectedEpisode.setState(EpisodeState.WATCHED);
@@ -174,7 +175,7 @@ public class ManagerWindow extends JFrame {
 			if (b) {
 				try {
 					tableModel.setEpisodes(managerService.listEpisodes(show.getId()));
-				} catch (Exception e1) {
+				} catch (final Exception e1) {
 					e1.printStackTrace();
 				}
 			}

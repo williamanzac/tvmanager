@@ -31,6 +31,7 @@ public class ConfigurationDialog extends JDialog {
 	private final JTextField txtTorrentUsername;
 	private final JPasswordField txtTorrentPassword;
 	private final JTextField txtShowDestination;
+	private final JTextField txtShowApiKey;
 
 	private final ManagerService managerService;
 
@@ -46,6 +47,7 @@ public class ConfigurationDialog extends JDialog {
 				configuration.torrentUsername = txtTorrentUsername.getText();
 				configuration.torrentPassword = new String(txtTorrentPassword.getPassword());
 				configuration.showDestination = new File(txtShowDestination.getText());
+				configuration.tvdbApiKey = txtShowApiKey.getText();
 				try {
 					managerService.saveConfiguration(configuration);
 				} catch (final Exception e) {
@@ -178,5 +180,15 @@ public class ConfigurationDialog extends JDialog {
 		btnShowDestination.setActionCommand("browseShowDestination");
 		btnShowDestination.addActionListener(buttonActions);
 		showPanel.add(btnShowDestination, "6, 2");
+
+		txtShowApiKey = new JTextField();
+
+		final JLabel lblShowApiKey = new JLabel("TheTVDB API Key:");
+		lblShowApiKey.setLabelFor(txtShowApiKey);
+		showPanel.add(lblShowApiKey, "2, 4, right, default");
+
+		showPanel.add(txtShowApiKey, "4, 4, fill, default");
+		txtShowApiKey.setColumns(10);
+		txtShowApiKey.setText(configuration.tvdbApiKey);
 	}
 }

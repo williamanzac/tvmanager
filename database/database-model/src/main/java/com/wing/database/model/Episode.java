@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @XmlRootElement(name = "episode")
 public class Episode implements Comparable<Episode> {
 	private int showId;
@@ -72,9 +75,15 @@ public class Episode implements Comparable<Episode> {
 	@Override
 	public int compareTo(final Episode that) {
 		int compare;
-		compare = Integer.compare(showId, that.showId);
+		// compare = Integer.compare(showId, that.showId);
+		// if (compare == 0) {
+		// compare = Integer.compare(epnum, that.epnum) * -1;
+		// }
+		// if (compare == 0) {
+		compare = Integer.compare(season, that.season) * -1;
+		// }
 		if (compare == 0) {
-			compare = Integer.compare(epnum, that.epnum) * -1;
+			compare = Integer.compare(number, that.number) * -1;
 		}
 		return compare;
 	}
@@ -111,7 +120,12 @@ public class Episode implements Comparable<Episode> {
 		return showId;
 	}
 
-	public void setShowId(int showId) {
+	public void setShowId(final int showId) {
 		this.showId = showId;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }

@@ -11,6 +11,8 @@ import javax.swing.JSplitPane;
 
 public class SQLDialog extends JDialog {
 
+	private static final long serialVersionUID = 4859263485843756152L;
+
 	/**
 	 * Launch the application.
 	 */

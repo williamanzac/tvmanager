@@ -20,11 +20,6 @@
 		</dependency>
 		<dependency>
 			<groupId>com.wing</groupId>
-			<artifactId>TvRage</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.wing</groupId>
 			<artifactId>database-service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -67,6 +62,11 @@
 			<groupId>com.eclipsesource.jaxrs</groupId>
 			<artifactId>jersey-all</artifactId>
 			<version>2.18</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wing</groupId>
+			<artifactId>TheTVDB</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

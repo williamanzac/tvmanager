@@ -5,12 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.wing</groupId>
-		<artifactId>database</artifactId>
+		<artifactId>providers</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>database-ui</artifactId>
-	<name>database-ui</name>
-	<url>http://maven.apache.org</url>
+	<artifactId>TheTVDB</artifactId>
+	<name>TheTVDB</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -19,6 +18,21 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.omertron</groupId>
+			<artifactId>thetvdbapi</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wing</groupId>
+			<artifactId>search-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wing</groupId>
+			<artifactId>configuration-service</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -14,7 +14,6 @@ import org.dom4j.io.SAXReader;
 public class ProxyService {
 	private static final String proxybayURL = "http://proxybay.github.io";
 
-	private final SAXReader xmlReader = new SAXReader();
 	private final SAXReader htmlReader = new SAXReader(new Parser());
 
 	protected InputStream getResponse(final String url) throws Exception {

@@ -36,6 +36,7 @@ public class UTorrentDownloader extends TorrentDownloader {
 	private final Thread monitorThread;
 	private boolean running = true;
 
+	@SuppressWarnings("deprecation")
 	public UTorrentDownloader(final ManagerService managerService) throws Exception {
 		super(managerService);
 		final HttpState state = client.getState();
@@ -91,6 +92,7 @@ public class UTorrentDownloader extends TorrentDownloader {
 	}
 
 	protected InputStream getResponse(final String url) throws Exception {
+		System.out.println(url);
 		final GetMethod method = new GetMethod(url);
 		// method.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
 		client.executeMethod(method);
@@ -135,7 +137,8 @@ public class UTorrentDownloader extends TorrentDownloader {
 	void addTorrent(final Torrent torrent) throws Exception {
 		final String url = torrent.getUrl().toString();
 		final String encode = URLEncoder.encode(url, "UTF-8");
-		getuTorrentResponse("&action=add-url&s=" + encode);
+		final JSONObject response = getuTorrentResponse("&action=add-url&s=" + encode);
+		System.out.println(response);
 	}
 
 	List<Torrent> parseTorrentList(final JSONObject object) {

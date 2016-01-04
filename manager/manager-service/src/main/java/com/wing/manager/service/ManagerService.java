@@ -56,9 +56,9 @@ public interface ManagerService {
 	void saveEpisode(final Episode episode) throws Exception;
 
 	@POST
-	@Path("/shows/{showId:.*}/episodes/{epnum:.*}")
+	@Path("/shows/{showId:\\d+}/episodes/{season:\\d+}/{number:\\d+}")
 	@Consumes(MediaType.APPLICATION_XML)
-	void removeEpisode(final int showId, final int epnum) throws Exception;
+	void removeEpisode(final int showId, final int season, final int number) throws Exception;
 
 	@GET
 	@Path("/torrents")
