@@ -2,7 +2,6 @@ package com.wing.provider.utorrent.downloader;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpState;
+import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
@@ -93,7 +93,8 @@ public class UTorrentDownloader extends TorrentDownloader {
 
 	protected InputStream getResponse(final String url) throws Exception {
 		System.out.println(url);
-		final GetMethod method = new GetMethod(url);
+		final GetMethod method = new GetMethod();
+		method.setURI(new URI(url, false));
 		// method.getParams().setCookiePolicy(CookiePolicy.RFC_2109);
 		client.executeMethod(method);
 		if (method.getStatusCode() != 200) {
@@ -135,9 +136,10 @@ public class UTorrentDownloader extends TorrentDownloader {
 	}
 
 	void addTorrent(final Torrent torrent) throws Exception {
-		final String url = torrent.getUrl().toString();
-		final String encode = URLEncoder.encode(url, "UTF-8");
-		final JSONObject response = getuTorrentResponse("&action=add-url&s=" + encode);
+		final String url = torrent.getUrl();
+		System.out.println(url);
+		// final String encode = URLEncoder.encode(url, "UTF-8");
+		final JSONObject response = getuTorrentResponse("&action=add-url&s=" + url);
 		System.out.println(response);
 	}
 

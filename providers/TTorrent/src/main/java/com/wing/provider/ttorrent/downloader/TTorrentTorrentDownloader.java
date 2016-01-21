@@ -96,37 +96,37 @@ public class TTorrentTorrentDownloader extends TorrentDownloader {
 						}
 					}
 					// get the next torrent in the queue and start downloading.
-				if (downloadQueue.isEmpty() && !queue.isEmpty()) {
-					final Torrent torrent2 = queue.get(0);
-					final InputStream response = getResponse(torrent2.getUrl().toString());
-					final byte[] byteArray = IOUtils.toByteArray(response);
-					// System.out.println(new String(byteArray));
-					final Configuration loadConfiguration = managerService.loadConfiguration();
-					final File torrentDestination = loadConfiguration.torrentDestination;
-					final SharedTorrent torrent = new SharedTorrent(byteArray, torrentDestination);
-					final Client client = new Client(InetAddress.getLocalHost(), torrent);
-					client.setMaxUploadRate(0.1d);
-					client.download();
-					client.addObserver(observer);
+					if (downloadQueue.isEmpty() && !queue.isEmpty()) {
+						final Torrent torrent2 = queue.get(0);
+						final InputStream response = getResponse(torrent2.getUrl().toString());
+						final byte[] byteArray = IOUtils.toByteArray(response);
+						// System.out.println(new String(byteArray));
+						final Configuration loadConfiguration = managerService.loadConfiguration();
+						final File torrentDestination = loadConfiguration.torrentDestination;
+						final SharedTorrent torrent = new SharedTorrent(byteArray, torrentDestination);
+						final Client client = new Client(InetAddress.getLocalHost(), torrent);
+						client.setMaxUploadRate(0.1d);
+						client.download();
+						client.addObserver(observer);
 
-					downloadQueue.put(client, torrent2);
+						downloadQueue.put(client, torrent2);
 
-					torrent2.setTitle(torrent.getName());
-					torrent2.setState(TorrentState.DOWNLOADING);
-					managerService.saveTorrent(torrent2);
+						torrent2.setTitle(torrent.getName());
+						torrent2.setState(TorrentState.DOWNLOADING);
+						managerService.saveTorrent(torrent2);
 
-					client.waitForCompletion();
+						client.waitForCompletion();
+					}
+				} catch (final Exception e) {
+					e.printStackTrace();
 				}
-			} catch (final Exception e) {
-				e.printStackTrace();
+				try {
+					Thread.sleep(1000);
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
 			}
-			try {
-				Thread.sleep(1000);
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}	);
+		}	);
 	}
 
 	protected InputStream getResponse(final String url) throws Exception {
@@ -153,10 +153,10 @@ public class TTorrentTorrentDownloader extends TorrentDownloader {
 	}
 
 	@Override
-	public Torrent addTorrent(File file) throws Exception {
+	public Torrent addTorrent(final File file) throws Exception {
 		final Torrent torrent = new Torrent();
 		final com.turn.ttorrent.common.Torrent ttorrent = com.turn.ttorrent.common.Torrent.load(file);
-		torrent.setUrl(file.toURI().toURL());
+		torrent.setUrl(file.toURI().toString());
 		torrent.setTitle(ttorrent.getName());
 		torrent.setHash(ttorrent.getHexInfoHash());
 		queue.add(torrent);
@@ -165,25 +165,25 @@ public class TTorrentTorrentDownloader extends TorrentDownloader {
 	}
 
 	@Override
-	public void startTorrent(Torrent torrent) {
+	public void startTorrent(final Torrent torrent) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void pauseTorrent(Torrent torrent) {
+	public void pauseTorrent(final Torrent torrent) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void stopTorrent(Torrent torrent) {
+	public void stopTorrent(final Torrent torrent) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void removeTorrent(Torrent torrent) {
+	public void removeTorrent(final Torrent torrent) {
 		// TODO Auto-generated method stub
 
 	}

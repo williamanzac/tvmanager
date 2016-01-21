@@ -1,6 +1,5 @@
 package com.wing.database.service;
 
-import java.net.URL;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,7 +40,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 			torrent.setTitle(resultSet.getString(2));
 			final String url = resultSet.getString(6);
 			if (url != null) {
-				torrent.setUrl(new URL(url));
+				torrent.setUrl(url);
 			}
 		}
 		return torrent;
@@ -73,7 +72,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 			}
 			statement.setString(2, value.getTitle());
 			if (value.getUrl() != null) {
-				statement.setString(6, value.getUrl().toExternalForm());
+				statement.setString(6, value.getUrl());
 			} else {
 				statement.setString(6, null);
 			}
@@ -99,7 +98,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 			}
 			statement.setString(1, value.getTitle());
 			if (value.getUrl() != null) {
-				statement.setString(5, value.getUrl().toExternalForm());
+				statement.setString(5, value.getUrl());
 			} else {
 				statement.setString(5, null);
 			}
@@ -137,7 +136,7 @@ public class TorrentPersistenceManager extends DatabasePersistenceManager<Torren
 			torrent.setTitle(resultSet.getString(2));
 			final String url = resultSet.getString(6);
 			if (url != null) {
-				torrent.setUrl(new URL(url));
+				torrent.setUrl(url);
 			}
 
 			torrents.add(torrent);

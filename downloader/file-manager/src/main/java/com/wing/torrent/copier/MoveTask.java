@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,7 +32,7 @@ public class MoveTask extends FileTask {
 		try (InputStream bis = new BufferedInputStream(new FileInputStream(source));
 				OutputStream bos = new BufferedOutputStream(new FileOutputStream(target));) {
 			int count;
-			byte[] buffer = new byte[4096];
+			final byte[] buffer = new byte[4096];
 			while (-1 != (count = bis.read(buffer)) && !stopping) {
 				bos.write(buffer, 0, count);
 				copiedBytes += count;
@@ -39,8 +40,11 @@ public class MoveTask extends FileTask {
 				setProgress((int) (copiedBytes * 100 / totalBytes));
 			}
 			FileUtils.deleteQuietly(source);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
+			if (e instanceof FileNotFoundException) {
+				setProgress(100);
+			}
 		}
 	}
 }
