@@ -29,17 +29,17 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>10.0.10</version>
+			<version>10.0.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
-			<version>9.4.45.v20220203</version>
+			<version>10.0.14</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-jetty-servlet</artifactId>
-			<version>2.36</version>
+			<version>3.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hsqldb</groupId>
